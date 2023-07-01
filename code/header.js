@@ -82,14 +82,6 @@ document.addEventListener("click", (e) => {
   }
 });
 
-// const submitBtn = document.querySelectorAll(".submit__btn");
-// submitBtn.forEach((button) => {
-//   button.addEventListener("click", (e) => {
-//     e.preventDefault();
-//     console.log("Form to submit");
-//   });
-// });
-
 const submitBtn = document.querySelectorAll(".submit__btn");
 
 const nameRegex = /^[a-zA-Z\s]+$/;
@@ -168,4 +160,34 @@ submitBtn.forEach((button) => {
       document.location.href = './thank-you/index.html';
     }
   }); 
+});
+
+submitBtn.forEach((button) => {
+  button.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    const form = button.closest('form');
+    const emailInput = form.querySelector('input[name="mail"]');
+    const passInput = form.querySelector('input[name="pass"]');
+
+    let isValid = true;
+
+    if (!validateInput(emailInput, emailRegex) || emailInput.value.trim() === '') {
+      emailInput.nextElementSibling.textContent = 'Please enter an email';
+      isValid = false;
+    } else {
+      emailInput.nextElementSibling.textContent = '';
+    }
+
+    if (!validateInput(passInput, passRegex) || passInput.value.trim() === '') {
+      passInput.nextElementSibling.textContent = 'Please enter a password';
+      isValid = false;
+    } else {
+      passInput.nextElementSibling.textContent = '';
+    }
+
+    if (isValid) {
+      document.location.href = './thank-you/index.html';
+    }
+  });
 });
