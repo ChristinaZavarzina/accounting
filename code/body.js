@@ -30,11 +30,10 @@ createP2.after(createBtn);
 
 const createTable = document.createElement('table');
 createTable.classList.add('table__body');
-createTable.setAttribute('id', 'myTable');
 createBtn.after(createTable);
 
 const addButton = document.querySelector(".add__btn");
-addButton.addEventListener("click", function (e) {
+addButton.addEventListener("click", (e) => {
   e.preventDefault();
 
   const typeSelect = document.getElementById("type");
@@ -42,10 +41,10 @@ addButton.addEventListener("click", function (e) {
   const descriptionInput = document.getElementById("description");
   const categoryExpenses = document.getElementById("category__expenses");
   const categoryIncome = document.getElementById("category__income");
-  const selectedCategory = typeSelect.value === "expenses" ? categoryExpenses.value: categoryIncome.value;
+  const selectedCategory = typeSelect.value === "Expenses" ? categoryExpenses.value: categoryIncome.value;
   const dateInput = document.getElementById("date");
 
-  const newRow = createTable.insertRow();
+  const newRow = createTable.insertRow(0);
   const typeCell = newRow.insertCell();
   typeCell.textContent = typeSelect.value;
   const amountCell = newRow.insertCell();
@@ -56,11 +55,24 @@ addButton.addEventListener("click", function (e) {
   categoryCell.textContent = selectedCategory;
   const dateCell = newRow.insertCell();
   dateCell.textContent = dateInput.value;
+  const deleteCell = newRow.insertCell();
 
-  typeSelect.value = "expenses";
   amountInput.value = "";
   descriptionInput.value = "";
-  categoryExpenses.value = "";
-  categoryIncome.value = "";
+  categoryExpenses.value = "Foodstuff";
+  categoryIncome.value = "Salary";
   dateInput.value = "";
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.textContent = "Delete";
+  deleteBtn.classList.add('btn__delete');
+  deleteBtn.addEventListener("click", () => {
+    createTable.deleteRow(newRow.rowIndex);
+  });
+  deleteCell.append(deleteBtn);
+
+  const transactionBlock = document.getElementById('transaction__block');
+  transactionBlock.style.display = "none";
+
+  arrow.classList.remove('active');
 });

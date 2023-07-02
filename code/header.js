@@ -17,6 +17,7 @@ transactionBtn.addEventListener('click', () => {
 document.addEventListener("click", (e) => {
   if (!transactionBtn.contains(e.target) && !transactionBlock.contains(e.target)) {
     transactionBlock.style.display = "none";
+    arrow.classList.remove('active');
   }
 });
 
@@ -25,10 +26,10 @@ const categoryExpenses = document.getElementById('category__expenses');
 const categoryIncome = document.getElementById('category__income');
 
 typeSelect.addEventListener('change', function() {
-  if (this.value === 'expenses') {
+  if (this.value === 'Expenses') {
     categoryExpenses.style.display = 'block';
     categoryIncome.style.display = 'none';
-  } else if (this.value === 'income') {
+  } else if (this.value === 'Income') {
     categoryExpenses.style.display = 'none';
     categoryIncome.style.display = 'block';
   } else {
@@ -85,7 +86,7 @@ document.addEventListener("click", (e) => {
 const submitBtn = document.querySelectorAll(".submit__btn");
 
 const nameRegex = /^[a-zA-Z\s]+$/;
-const phoneRegex = /^\+?\d+$/;
+// const phoneRegex = /^\+?\d+$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passRegex = /^(?=.*\d)[a-zA-Z\d]{8,}$/;
 
@@ -149,12 +150,12 @@ submitBtn.forEach((button) => {
       confirmPassInput.nextElementSibling.textContent = '';
     }
     
-    if (!validateInput(phoneInput, phoneRegex)) {
-      phoneInput.nextElementSibling.textContent = 'Please enter a valid phone number';
-      isValid = false;
-    } else {
-      phoneInput.nextElementSibling.textContent = '';
-    }
+    // if (!validateInput(phoneInput, phoneRegex)) {
+    //   phoneInput.nextElementSibling.textContent = 'Please enter a valid phone number';
+    //   isValid = false;
+    // } else {
+    //   phoneInput.nextElementSibling.textContent = '';
+    // }
     
     if (isValid) {
       document.location.href = './thank-you/index.html';

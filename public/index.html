@@ -23,17 +23,17 @@
       <div class="menu__trans">
         <label for="type">Transaction type:</label>
         <select id="type">
-          <option value="expenses">Expenses</option>
-          <option value="income">Income</option>
+          <option value="Expenses">Expenses</option>
+          <option value="Income">Income</option>
         </select>
       </div>
       <div class="menu__trans">
         <label for="amount">Amount:</label>
-        <input type="number" id="amount">
+        <input type="number" id="amount" data-fulltext="This is the full text">
       </div>
       <div class="menu__trans">
         <label for="description">Description:</label>
-        <input type="text" id="description" autocomplete="off">
+        <input type="text" id="description" autocomplete="off" data-fulltext="This is the full text">
       </div>
       <div class="menu__trans">
         <label>Category:</label>
@@ -81,7 +81,7 @@
         <label for="date">Date:</label>
         <input type="date" id="date">
       </div>
-      <div><button type="submit" class="add__btn">Add</button></div>
+      <button type="submit" class="add__btn">Add</button>
     </form>
     
     <div id="login__modal" class="modal">
@@ -124,13 +124,8 @@
           <input type="password" name="confirm-pass" placeholder="Confirm your password" class="input" autocomplete="new-password">
           <span class="error-text"></span>
     
-          <input type="tel" name="phone" placeholder="Phone number +XXXXXXXXX" class="input" autocomplete="phone">
-          <span class="error-text"></span>
-    
-          <br>
-          <input type="radio" name="gender" class="radio">Male
-          <input type="radio" name="gender" class="radio">Female
-          <br>
+          <!-- <input type="tel" name="phone" placeholder="Phone number +XXXXXXXXX" class="input" autocomplete="phone">
+          <span class="error-text"></span> -->
           <input type="submit" value="Registration" class="submit__btn">
         </form>
       </div>
