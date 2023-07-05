@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Accounting</title>
+  <link rel="stylesheet" href="../style/style.css">
+</head>
+<body>
+  <header>
+    <div class="header">
+      <nav>
+        <ul class="menu__list">
+          <button class="transaction__btn" id="transaction">Create transaction
+            <span class="arrow"></span></button>
+          <button id="filter" class="filter__btn">Filters
+            <span class="arrow"></span></button>
+          </button>
+          <li id="open__logout" class="open__logout">Log out</li>
+        </ul>
+      </nav>
+    </div>
+
+
+    <form class="transaction__block" id="transaction__block">
+      <div class="menu__trans">
+        <label for="type">Transaction type:</label>
+        <select id="type">
+          <option value="Expenses">Expenses</option>
+          <option value="Income">Income</option>
+        </select>
+      </div>
+      <div class="menu__trans">
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount">
+      </div>
+      <div class="menu__trans">
+        <label for="description">Description:</label>
+        <input type="text" id="description" autocomplete="off">
+      </div>
+      <div class="menu__trans">
+        <label>Category:</label>
+        <select id="category__expenses">
+          <optgroup label="Products">
+            <option value="Foodstuff">Foodstuff</option>
+            <option value="Other">Other</option>
+          </optgroup>
+          <optgroup label="Real estate">
+            <option value="Apartment">Apartment</option>
+            <option value="Communal">Communal</option>
+            <option value="Other">Other</option>
+          </optgroup>
+          <optgroup label="Entertainment">
+            <option value="Transport">Transport</option>
+            <option value="Internet/Network">Internet/Network</option>
+            <option value="Restaurant/Bar">Restaurant/Bar</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Travel">Travel</option>
+            <option value="Cinema/Theater">Cinema/Theater</option>
+            <option value="Circus/Zoo">Circus/Zoo</option>
+            <option value="Other">Other</option>
+          </optgroup>
+          <optgroup label="Medical services">
+            <option value="Medical insurance">Medical insurance</option>
+            <option value="Other">Other</option>
+          </optgroup>
+          <optgroup label="Other expenditure">
+            <option value="Taxes">Taxes</option>
+            <option value="Credit">Credit</option>
+            <option value="Insurance">Insurance</option>
+            <option value="Other">Other</option>
+          </optgroup>
+        </select>
+        <select id="category__income">
+          <option value="Salary">Salary</option>
+          <option value="Present">Present</option>
+          <option value="Real estate">Real estate</option>
+          <option value="Other">Other</option>
+      </select>
+      </div>
+      <div class="menu__trans">
+        <label for="date">Date:</label>
+        <input type="date" id="date">
+      </div>
+      <button type="submit" class="add__btn">Add</button>
+    </form>
+
+
+    <div id="logout__modal" class="logout">
+      <div class="modal__content">
+        <span class="close">&times;</span>
+        <form action="/logout" method="POST" class="form__logout">
+          <h2>Log out</h2>
+          <input type="button" value="Yes" class="yes__btn">
+          <input type="button" value="No" class="no__btn">
+          </form>
+      </div>
+    </div>
+
+
+    <form id="filter__block" class="filter__block">
+      <div class="menu__trans">
+        <label for="type">Transaction type:</label>
+        <select id="type__filter">
+          <option value="Expenses">Expenses</option>
+          <option value="Income">Income</option>
+        </select>
+      </div>
+      <div class="menu__trans">
+        <label for="date">Start date:</label>
+        <input type="date" id="date__start" class="date">
+      </div>
+      <div class="menu__trans">
+        <label for="date">End date:</label>
+        <input type="date" id="date__end" class="date">
+      </div>
+      <div class="menu__trans">
+        <label>Category:</label>
+        <select id="category__expenses__filter" >
+          <optgroup label="Products">
+            <option value="Foodstuff">Foodstuff</option>
+            <option value="Other">Other</option>
+          </optgroup>
+          <optgroup label="Real estate">
+            <option value="Apartment">Apartment</option>
+            <option value="Communal">Communal</option>
+            <option value="Other">Other</option>
+          </optgroup>
+          <optgroup label="Entertainment">
+            <option value="Transport">Transport</option>
+            <option value="Internet/Network">Internet/Network</option>
+            <option value="Restaurant/Bar">Restaurant/Bar</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Travel">Travel</option>
+            <option value="Cinema/Theater">Cinema/Theater</option>
+            <option value="Circus/Zoo">Circus/Zoo</option>
+            <option value="Other">Other</option>
+          </optgroup>
+          <optgroup label="Medical services">
+            <option value="Medical insurance">Medical insurance</option>
+            <option value="Other">Other</option>
+          </optgroup>
+          <optgroup label="Other expenditure">
+            <option value="Taxes">Taxes</option>
+            <option value="Credit">Credit</option>
+            <option value="Insurance">Insurance</option>
+            <option value="Other">Other</option>
+          </optgroup>
+        </select>
+        <select id="category__income__filter" >
+          <option value="Salary">Salary</option>
+          <option value="Present">Present</option>
+          <option value="Real estate">Real estate</option>
+          <option value="Other">Other</option>
+      </select>
+      </div>
+      <button type="submit" class="ok__btn">Ok</button>
+    </form>
+  </header>
+
+  <main>
+    <div id="body__container"></div>
+  </main>
+  <script src="../code/homeAccounting.js"></script>
+</body>
+</html>
