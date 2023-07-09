@@ -18,10 +18,6 @@ const openModalHandler = (modal, button) => {
 const logoutButton = document.getElementById('open__logout');
 openModalHandler(logoutModal, logoutButton);
 
-// document.addEventListener("DOMContentLoaded", () => {
-//   closeModal(logoutModal);
-// });
-
 const closeButtons = document.getElementsByClassName('close');
 for (let i = 0; i < closeButtons.length; i++) {
   closeButtons[i].addEventListener("click", () => {

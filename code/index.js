@@ -2,7 +2,7 @@
 
 const html = document.querySelector('html');
 const loginModal = document.getElementById('login__modal');
-const registrationModal = document.getElementById('registration__modal');
+const signupModal = document.getElementById('signup__modal');
 
 const openModal = (modal) => {
   modal.style.display = 'block';
@@ -21,46 +21,38 @@ const openModalHandler = (modal, button) => {
 }
 
 const loginButton = document.getElementById('open__login');
-const registrationButton = document.getElementById('open__registration');
+const signupButton = document.getElementById('open__signup');
 openModalHandler(loginModal, loginButton);
-openModalHandler(registrationModal, registrationButton);
-
-// document.addEventListener("DOMContentLoaded", () => {
-//   closeModal(loginModal);
-//   closeModal(registrationModal);
-// });
+openModalHandler(signupModal, signupButton);
 
 const closeButtons = document.getElementsByClassName('close');
 for (let i = 0; i < closeButtons.length; i++) {
   closeButtons[i].addEventListener("click", () => {
-    registrationModal.style.display = "none";
+    signupModal.style.display = "none";
     loginModal.style.display = "none";
   });
 }
 
 document.addEventListener("click", (e) => {
-  if (e.target === loginModal || e.target === registrationModal) {
+  if (e.target === loginModal || e.target === signupModal) {
     loginModal.style.display = "none";
-    registrationModal.style.display = "none";
+    signupModal.style.display = "none";
   }
 });
 
-const submitBtn = document.querySelectorAll('.submit__btn');
+const validateInput = (input, regex) => {
+  return regex.test(input.value);
+}
 
 const nameRegex = /^[a-zA-Z\s]+$/;
 // const phoneRegex = /^\+?\d+$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passRegex = /^(?=.*\d)[a-zA-Z\d]{8,}$/;
 
-const validateInput = (input, regex) => {
-  return regex.test(input.value);
-}
-
+const submitBtn = document.querySelectorAll('.submit__btn');
 submitBtn.forEach((button) => {
   button.addEventListener("click", (e) => {
     e.preventDefault();
-    let isValid = true;
-    
     const form = button.closest('form');
     const nameInput = form.querySelector('input[name="username"]');
     const surnameInput = form.querySelector('input[name="surname"]');
@@ -69,6 +61,8 @@ submitBtn.forEach((button) => {
     const passInput = form.querySelector('input[name="pass"]');
     const confirmPassInput = form.querySelector('input[name="confirm-pass"]');
     // const phoneInput = form.querySelector('input[name="phone"]');
+
+    let isValid = true;
     
     if (!validateInput(nameInput, nameRegex)) {
       nameInput.nextElementSibling.textContent = 'Please enter the correct name';
@@ -121,7 +115,7 @@ submitBtn.forEach((button) => {
     
     if (isValid) {   // под вопросом 
       setTimeout(() => {
-        registrationModal.style.display = "none";
+        signupModal.style.display = "none";
         document.location.href = '../public/homeAccounting.html';
       }, 2000);
     }
@@ -132,9 +126,9 @@ submitBtn.forEach((button) => {
   button.addEventListener("click", (e) => {
     e.preventDefault();
 
-    const form = button.closest('form');
-    const emailInput = form.querySelector('input[name="mail"]');
-    const passInput = form.querySelector('input[name="pass"]');
+    const formLogin = button.closest('form');
+    const emailInput = formLogin.querySelector('input[name="mail"]');
+    const passInput = formLogin.querySelector('input[name="pass"]');
 
     let isValid = true;
 
@@ -166,19 +160,20 @@ const loginErrorMessage = document.getElementById('login__error__message');
 
 loginForm.addEventListener("submit", (e) => {
   e.preventDefault();
-
   const emailInput = loginForm.querySelector('input[name="mail"]');
   const passInput = loginForm.querySelector('input[name="pass"]');
-
   const email = emailInput.value;
   const password = passInput.value;
+  const formData = new URLSearchParams();
+  formData.append('mail', email);
+  formData.append('pass', password);
 
   fetch('/api/login', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: JSON.stringify({ email, password }),
+    body: formData.toString(),
   })
     .then((response) => response.json())
     .then((data) => {
@@ -196,32 +191,35 @@ loginForm.addEventListener("submit", (e) => {
     });
 });
 
-const registrationForm = document.querySelector('.form__registration');
-const registrationErrorMessage = document.getElementById('registration__error__message');
+const signupForm = document.querySelector('.form__signup');
+const signupErrorMessage = document.getElementById('signup__error__message');
 
-registrationForm.addEventListener("submit", (e) => {
+signupForm.addEventListener("submit", (e) => {
   e.preventDefault();
-
-  const emailInput = loginForm.querySelector('input[name="mail"]');
-
+  const emailInput = signupForm.querySelector('input[name="mail"]');
+  const passInput = signupForm.querySelector('input[name="pass"]');
   const email = emailInput.value;
+  const password = passInput.value;
+  const formData = new URLSearchParams();
+  formData.append('mail', email);
+  formData.append('pass', password);
 
-  fetch('/api/login', {
+  fetch('/api/signup', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: JSON.stringify({ email, password }),
+    body: formData.toString(),
   })
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
         setTimeout(() => {
-          registrationModal.style.display = "none";
+          signupModal.style.display = "none";
           document.location.href = '../public/homeAccounting.html';
         }, 2000);
       } else {
-        registrationErrorMessage.textContent = 'This email address already exists';
+        signupErrorMessage.textContent = 'This email address already exists';
       }
     })
     .catch((error) => {
@@ -230,24 +228,23 @@ registrationForm.addEventListener("submit", (e) => {
 });
 
 const loginLink = document.getElementById('login__link');
-const registrationLink = document.getElementById('registration__link');
+const signupLink = document.getElementById('signup__link');
 
 loginLink.addEventListener("click", (e) => {
   e.preventDefault();
   setTimeout(() => {
-    registrationModal.style.display = 'none';
+    signupModal.style.display = 'none';
     loginModal.style.display = 'block';
   }, 2000);
 });
 
-registrationLink.addEventListener("click", (e) => {
+signupLink.addEventListener("click", (e) => {
   e.preventDefault();
   setTimeout(() => {
     loginModal.style.display = 'none';
-    registrationModal.style.display = 'block';
+    signupModal.style.display = 'block';
   }, 2000);
 });
-
 
 // BODY ------------------------------------------------------------------------------------
 const bodyContainer = document.getElementById('body__container');
@@ -255,7 +252,6 @@ const bodyContainer = document.getElementById('body__container');
 const createH1 = document.createElement('h1');
 createH1.textContent = 'Home Accounting';
 bodyContainer.prepend(createH1);
-
 
 const createP = document.createElement('p');
 createP.classList.add('text__body');
