@@ -172,6 +172,7 @@ loginForm.addEventListener("submit", (e) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
+      'X-CSRFToken': getCookie('csrftoken'),
     },
     body: formData.toString(),
   })
@@ -208,6 +209,7 @@ signupForm.addEventListener("submit", (e) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
+      'X-CSRFToken': getCookie('csrftoken'),
     },
     body: formData.toString(),
   })
