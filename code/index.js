@@ -157,6 +157,18 @@ submitBtn.forEach((button) => {
 
 const loginForm = document.querySelector('.form__login');
 const loginErrorMessage = document.getElementById('login__error__message');
+// -----------------------------------
+const emailInput = loginForm.querySelector('input[name="mail"]');
+emailInput.addEventListener("input", (e) => {
+  const email = e.target.value;
+  console.log(email);
+});
+const passInput = loginForm.querySelector('input[name="pass"]');
+passInput.addEventListener("input", (e) => {
+  const password = e.target.value;
+  console.log(password);
+});
+// -----------------------------------
 
 loginForm.addEventListener("submit", (e) => {
   e.preventDefault();
