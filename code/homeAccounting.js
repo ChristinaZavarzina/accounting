@@ -184,19 +184,19 @@ const createH1 = document.createElement('h1');
 createH1.textContent = 'Home Accounting';
 bodyContainer.prepend(createH1);
 
-const createDiv = document.createElement('div');
-createDiv.classList.add('list__body');
-createH1.after(createDiv);
 const createP2 = document.createElement('p');
 createP2.classList.add('text__body');
 createP2.textContent = 'Here you can enter your transactions and view a list of all saved transactions.';
-createDiv.prepend(createP2);
+createH1.after(createP2);
 
-// const createBtn = document.createElement('button');
-// createBtn.classList.add('btn__body');
-// createBtn.textContent = 'List of transactions'
-// bodyContainer.after(createBtn);
+const tableContainer = document.createElement('div');
+tableContainer.classList.add('table__container');
+bodyContainer.append(tableContainer);
 
 const createTable = document.createElement('table');
 createTable.classList.add('table__body');
-createP2.after(createTable);
+tableContainer.append(createTable);
+
+const footer = document.createElement('footer');
+footer.textContent = 'by 2023';
+document.body.append(footer);

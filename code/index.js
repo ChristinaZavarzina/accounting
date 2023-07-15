@@ -155,90 +155,81 @@ submitBtn.forEach((button) => {
   });
 });
 
-const loginForm = document.querySelector('.form__login');
-const loginErrorMessage = document.getElementById('login__error__message');
-// -----------------------------------
-const emailInput = loginForm.querySelector('input[name="mail"]');
-emailInput.addEventListener("input", (e) => {
-  const email = e.target.value;
-  console.log(email);
-});
-const passInput = loginForm.querySelector('input[name="pass"]');
-passInput.addEventListener("input", (e) => {
-  const password = e.target.value;
-  console.log(password);
-});
-// -----------------------------------
+document.addEventListener('DOMContentLoaded', () => {
+  const loginForm = document.getElementById('form__login');
+  const loginErrorMessage = document.getElementById('login__error__message');
+  loginForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const emailInput = loginForm.querySelector('input[name="mail"]');
+    const passInput = loginForm.querySelector('input[name="pass"]');
+    const email = emailInput.value;
+    const password = passInput.value;
+    const formData = new URLSearchParams();
+    formData.append('mail', email);
+    formData.append('pass', password);
 
-loginForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const emailInput = loginForm.querySelector('input[name="mail"]');
-  const passInput = loginForm.querySelector('input[name="pass"]');
-  const email = emailInput.value;
-  const password = passInput.value;
-  const formData = new URLSearchParams();
-  formData.append('mail', email);
-  formData.append('pass', password);
-
-  fetch('/api/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'X-CSRFToken': getCookie('csrftoken'),
-    },
-    body: formData.toString(),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.success) {
-        setTimeout(() => {
-          loginModal.style.display = "none";
-          document.location.href = '../public/homeAccounting.html';
-        }, 2000);
-      } else {
-        loginErrorMessage.textContent = 'This email address or password does not exist';
-      }
+    fetch('/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-CSRFToken': getCookie('csrftoken'),
+      },
+      body: formData.toString(),
     })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          setTimeout(() => {
+            loginModal.style.display = "none";
+            document.location.href = '../public/homeAccounting.html';
+          }, 2000);
+        } else {
+          loginErrorMessage.textContent = 'This email address or password does not exist';
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+      console.log('POST request sent');
+  });
 });
 
-const signupForm = document.querySelector('.form__signup');
-const signupErrorMessage = document.getElementById('signup__error__message');
+document.addEventListener('DOMContentLoaded', () => {
+  const signupForm = document.getElementById('form__signup');
+  const signupErrorMessage = document.getElementById('signup__error__message');
+  signupForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const emailInput = signupForm.querySelector('input[name="mail"]');
+    const passInput = signupForm.querySelector('input[name="pass"]');
+    const email = emailInput.value;
+    const password = passInput.value;
+    const formData = new URLSearchParams();
+    formData.append('mail', email);
+    formData.append('pass', password);
 
-signupForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const emailInput = signupForm.querySelector('input[name="mail"]');
-  const passInput = signupForm.querySelector('input[name="pass"]');
-  const email = emailInput.value;
-  const password = passInput.value;
-  const formData = new URLSearchParams();
-  formData.append('mail', email);
-  formData.append('pass', password);
-
-  fetch('/api/signup', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'X-CSRFToken': getCookie('csrftoken'),
-    },
-    body: formData.toString(),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.success) {
-        setTimeout(() => {
-          signupModal.style.display = "none";
-          document.location.href = '../public/homeAccounting.html';
-        }, 2000);
-      } else {
-        signupErrorMessage.textContent = 'This email address already exists';
-      }
+    fetch('/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-CSRFToken': getCookie('csrftoken'),
+      },
+      body: formData.toString(),
     })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          setTimeout(() => {
+            signupModal.style.display = "none";
+            document.location.href = '../public/homeAccounting.html';
+          }, 2000);
+        } else {
+          signupErrorMessage.textContent = 'This email address already exists';
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  });
 });
 
 const loginLink = document.getElementById('login__link');
@@ -272,3 +263,12 @@ createP.classList.add('text__body');
 createP.textContent = `Is a website that helps you keep track of your expenses and income.
 It allows you to create transactions, track them, sort and analyze data.`;
 createH1.after(createP);
+
+const image1 = document.createElement('img');
+image1.alt = 'img';
+image1.src = '../img/img.jpeg';
+createP.after(image1);
+
+const footer = document.createElement('footer');
+footer.textContent = 'by 2023';
+document.body.append(footer);

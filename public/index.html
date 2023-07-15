@@ -21,8 +21,8 @@
       <div class="modal__content">
         <span class="close">&times;</span>
         <h2>Log in</h2>
-        <form action="/login" method="POST" class="form__login">
-            <input id="inp" type="email" name="mail" placeholder="Email" class="input" autocomplete="email">
+        <form action="/login" method="POST"  id="form__login">
+            <input type="email" name="mail" placeholder="Email" class="input" autocomplete="email">
             <span class="error-text"></span>
             <input type="password" name="pass" placeholder="Password" class="input" autocomplete="current-password">
             <span class="error-text"></span>
@@ -37,7 +37,7 @@
       <div class="modal__content">
         <span class="close">&times;</span>
         <h2>Registration</h2>
-        <form action="/signup" method="POST" class="form__signup">
+        <form action="/signup" method="POST" id="form__signup">
           <input type="text" name="username" placeholder="Name" class="input" autocomplete="name">
           <span class="error-text"></span>
           <input type="text" name="surname" placeholder="Surname" class="input" autocomplete="name">
