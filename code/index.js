@@ -158,78 +158,66 @@ submitBtn.forEach((button) => {
 document.addEventListener('DOMContentLoaded', () => {
   const loginForm = document.getElementById('form__login');
   const loginErrorMessage = document.getElementById('login__error__message');
-  loginForm.addEventListener("submit", (e) => {
+  
+  loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const emailInput = loginForm.querySelector('input[name="mail"]');
-    const passInput = loginForm.querySelector('input[name="pass"]');
-    const email = emailInput.value;
-    const password = passInput.value;
-    const formData = new URLSearchParams();
-    formData.append('mail', email);
-    formData.append('pass', password);
-
-    fetch('/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'X-CSRFToken': getCookie('csrftoken'),
-      },
-      body: formData.toString(),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          setTimeout(() => {
-            loginModal.style.display = "none";
-            document.location.href = '../public/homeAccounting.html';
-          }, 2000);
-        } else {
-          loginErrorMessage.textContent = 'This email address or password does not exist';
-        }
-      })
-      .catch((error) => {
-        console.error('Error:', error);
+    const form = e.target;
+    const formData = new FormData(form);
+    const csrfToken = getCookie('csrftoken');
+    if (csrfToken) {
+      formData.append('csrfmiddlewaretoken', csrfToken);
+    }
+    try {
+      const response = await fetch('/login', {
+        method: 'POST',
+        body: formData,
       });
-      console.log('POST request sent');
+      if (response.ok) {
+        console.log('Successfully logged in');
+        setTimeout(() => {
+          loginModal.style.display = 'none';
+          document.location.href = '../public/homeAccounting.html';
+        }, 2000);
+      } else {
+        console.error('Error sending data');
+        loginErrorMessage.textContent = 'This email address already exists';
+      }
+    } catch (error) {
+      console.error('Error sending data:', error);
+    }
   });
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-  const signupForm = document.getElementById('form__signup');
-  const signupErrorMessage = document.getElementById('signup__error__message');
-  signupForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const emailInput = signupForm.querySelector('input[name="mail"]');
-    const passInput = signupForm.querySelector('input[name="pass"]');
-    const email = emailInput.value;
-    const password = passInput.value;
-    const formData = new URLSearchParams();
-    formData.append('mail', email);
-    formData.append('pass', password);
+const signupForm = document.getElementById('form__signup');
+const signupErrorMessage = document.getElementById('signup__error__message');
 
-    fetch('/signup', {
+signupForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const formData = new FormData(form);
+  const csrfToken = getCookie('csrftoken');
+  try {
+    const response = await fetch(form.action, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'X-CSRFToken': getCookie('csrftoken'),
+        'X-CSRFToken': csrfToken,
+        'Content-Type': 'multipart/form-data'
       },
-      body: formData.toString(),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          setTimeout(() => {
-            signupModal.style.display = "none";
-            document.location.href = '../public/homeAccounting.html';
-          }, 2000);
-        } else {
-          signupErrorMessage.textContent = 'This email address already exists';
-        }
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-  });
+      body: formData
+    });
+    if (response.ok) {
+      setTimeout(() => {
+        signupModal.style.display = "none";
+        document.location.href = '../public/homeAccounting.html';
+      }, 2000);
+      console.log('Successfully logged in');
+    } else {
+      signupErrorMessage.textContent = 'This email address already exists';
+      console.error('Error sending data');
+    }
+  } catch (error) {
+    console.error('Error sending data:', error);
+  }
 });
 
 const loginLink = document.getElementById('login__link');
