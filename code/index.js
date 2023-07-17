@@ -40,185 +40,141 @@ document.addEventListener("click", (e) => {
   }
 });
 
-const validateInput = (input, regex) => {
-  return regex.test(input.value);
-}
-
 const nameRegex = /^[a-zA-Z\s]+$/;
-// const phoneRegex = /^\+?\d+$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passRegex = /^(?=.*\d)[a-zA-Z\d]{8,}$/;
 
-const submitBtn = document.querySelectorAll('.submit__btn');
-submitBtn.forEach((button) => {
-  button.addEventListener("click", (e) => {
-    e.preventDefault();
-    const form = button.closest('form');
-    const nameInput = form.querySelector('input[name="username"]');
-    const surnameInput = form.querySelector('input[name="surname"]');
-    const emailInput = form.querySelector('input[name="mail"]');
-    const confirmEmailInput = form.querySelector('input[name="confirm-mail"]');
-    const passInput = form.querySelector('input[name="pass"]');
-    const confirmPassInput = form.querySelector('input[name="confirm-pass"]');
-    // const phoneInput = form.querySelector('input[name="phone"]');
+const validateField = (value, regex) => {
+  return regex.test(value);
+};
 
-    let isValid = true;
-    
-    if (!validateInput(nameInput, nameRegex)) {
-      nameInput.nextElementSibling.textContent = 'Please enter the correct name';
-      isValid = false;
-    } else {
-      nameInput.nextElementSibling.textContent = '';
-    }
-    
-    if (!validateInput(surnameInput, nameRegex)) {
-      surnameInput.nextElementSibling.textContent = 'Please enter the correct surname';
-      isValid = false;
-    } else {
-      surnameInput.nextElementSibling.textContent = '';
-    }
-    
-    if (!validateInput(emailInput, emailRegex)) {
-      emailInput.nextElementSibling.textContent = 'Please enter a valid email address';
-      isValid = false;
-    } else {
-      emailInput.nextElementSibling.textContent = '';
-    }
-    
-    if (emailInput.value !== confirmEmailInput.value) {
-      confirmEmailInput.nextElementSibling.textContent = 'Email addresses do not match';
-      isValid = false;
-    } else {
-      confirmEmailInput.nextElementSibling.textContent = '';
-    }
-    
-    if (!validateInput(passInput, passRegex)) {
-      passInput.nextElementSibling.textContent = 'Please enter a valid password minimum of 8 characters';
-      isValid = false;
-    } else {
-      passInput.nextElementSibling.textContent = '';
-    }
-    
-    if (passInput.value !== confirmPassInput.value) {
-      confirmPassInput.nextElementSibling.textContent = 'Passwords do not match';
-      isValid = false;
-    } else {
-      confirmPassInput.nextElementSibling.textContent = '';
-    }
-    
-    // if (!validateInput(phoneInput, phoneRegex)) {
-    //   phoneInput.nextElementSibling.textContent = 'Please enter a valid phone number';
-    //   isValid = false;
-    // } else {
-    //   phoneInput.nextElementSibling.textContent = '';
-    // }
-    
-    if (isValid) {   // под вопросом 
-      setTimeout(() => {
-        signupModal.style.display = "none";
-        document.location.href = '../public/homeAccounting.html';
-      }, 2000);
-    }
-  }); 
-});
+const emailInput = document.querySelector('input[name="mail"]');
+const emailError = document.getElementById('email-error');
+const passwordInput = document.querySelector('input[name="pass"]');
+const passwordError = document.getElementById('password-error');
+const loginErrorMessage = document.getElementById('login__error__message');
 
-submitBtn.forEach((button) => {
-  button.addEventListener("click", (e) => {
-    e.preventDefault();
+const submitLoginForm = (e) => {
+  e.preventDefault();
 
-    const formLogin = button.closest('form');
-    const emailInput = formLogin.querySelector('input[name="mail"]');
-    const passInput = formLogin.querySelector('input[name="pass"]');
+  if (!validateField(emailInput.value, emailRegex)) {
+    emailError.textContent = "Incorrect email format";
+    return;
+  } else {
+    emailError.textContent = "";
+  }
 
-    let isValid = true;
+  if (!validateField(passwordInput.value, passRegex)) {
+    passwordError.textContent = "The password must contain a minimum of 8 characters, including at least one digit";
+    return;
+  } else {
+    passwordError.textContent = "";
+  }
 
-    if (!validateInput(emailInput, emailRegex) || emailInput.value.trim() === '') {
-      emailInput.nextElementSibling.textContent = 'Please enter a valid email address';
-      isValid = false;
-    } else {
-      emailInput.nextElementSibling.textContent = '';
-    }
+  const formData = new FormData(loginForm);
+  const data = new URLSearchParams(formData);
 
-    if (!validateInput(passInput, passRegex) || passInput.value.trim() === '') {
-      passInput.nextElementSibling.textContent = 'Please enter a valid password minimum of 8 characters';
-      isValid = false;
-    } else {
-      passInput.nextElementSibling.textContent = '';
-    }
-
-    if (isValid) {  // под вопросом 
+  fetch('https://reqres.in/api/user', {
+    method: 'POST',
+    body: data
+  }).then(res => res.json())
+    .then(data => {
       setTimeout(() => {
         loginModal.style.display = "none";
         document.location.href = '../public/homeAccounting.html';
       }, 2000);
-    }
-  });
-});
+      console.log(data);
+    })
+    .catch(error => {
+      loginErrorMessage.textContent = 'This';
+      console.log(error);
+    });
+};
 
-document.addEventListener('DOMContentLoaded', () => {
-  const loginForm = document.getElementById('form__login');
-  const loginErrorMessage = document.getElementById('login__error__message');
-  
-  loginForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const formData = new FormData(form);
-    const csrfToken = getCookie('csrftoken');
-    if (csrfToken) {
-      formData.append('csrfmiddlewaretoken', csrfToken);
-    }
-    try {
-      const response = await fetch('/login', {
-        method: 'POST',
-        body: formData,
-      });
-      if (response.ok) {
-        console.log('Successfully logged in');
-        setTimeout(() => {
-          loginModal.style.display = 'none';
-          document.location.href = '../public/homeAccounting.html';
-        }, 2000);
-      } else {
-        console.error('Error sending data');
-        loginErrorMessage.textContent = 'This email address already exists';
-      }
-    } catch (error) {
-      console.error('Error sending data:', error);
-    }
-  });
-});
+const loginForm = document.getElementById('form__login');
+loginForm.addEventListener("submit", submitLoginForm);
 
-const signupForm = document.getElementById('form__signup');
+const usernameInput = document.querySelector('input[name="username"]');
+const usernameErrorS = document.getElementById('username-error');
+const surnameInput = document.querySelector('input[name="surname"]');
+const surnameErrorS = document.getElementById('surname-error');
+const emailInputS = document.querySelector('input[name="mailS"]');
+const emailErrorS = document.getElementById('signup-email-error');
+const confirmEmailInput = document.querySelector('input[name="confirm-mail"]');
+const confirmEmailErrorS = document.getElementById('confirm-email-error');
+const passwordInputS = document.querySelector('input[name="passS"]');
+const passwordErrorS = document.getElementById('signup-password-error');
+const confirmPassInput = document.querySelector('input[name="confirm-pass"]');
+const confirmPassErrorS = document.getElementById('confirm-password-error');
 const signupErrorMessage = document.getElementById('signup__error__message');
 
-signupForm.addEventListener("submit", async (e) => {
+const submitSignupForm = (e) => {
   e.preventDefault();
-  const form = e.target;
-  const formData = new FormData(form);
-  const csrfToken = getCookie('csrftoken');
-  try {
-    const response = await fetch(form.action, {
-      method: 'POST',
-      headers: {
-        'X-CSRFToken': csrfToken,
-        'Content-Type': 'multipart/form-data'
-      },
-      body: formData
-    });
-    if (response.ok) {
+
+  if (!validateField(usernameInput.value, nameRegex)) {
+    usernameErrorS.textContent = "Incorrect username format";
+    return;
+  } else {
+    usernameErrorS.textContent = "";
+  }
+
+  if (!validateField(surnameInput.value, nameRegex)) {
+    surnameErrorS.textContent = "Incorrect surname format";
+    return;
+  } else {
+    surnameErrorS.textContent = "";
+  }
+
+  if (!validateField(emailInputS.value, emailRegex)) {
+    emailErrorS.textContent = "Incorrect email format";
+    return;
+  } else {
+    emailErrorS.textContent = "";
+  }
+
+  if (emailInputS.value !== confirmEmailInput.value) {
+    confirmEmailErrorS.textContent = 'Email addresses do not match';
+    return
+  } else {
+    confirmEmailErrorS.textContent = "";
+  }
+
+  if (!validateField(passwordInputS.value, passRegex)) {
+    passwordErrorS.textContent = "The password must contain a minimum of 8 characters, including at least one digit";
+    return;
+  } else {
+    passwordErrorS.textContent = "";
+  }
+
+  if (passwordInputS.value !== confirmPassInput.value) {
+    confirmPassErrorS.textContent = 'Passwords do not match';
+    return
+  } else {
+    confirmPassErrorS.textContent = "";
+  }
+
+  const formData = new FormData(signupForm);
+  const data = new URLSearchParams(formData);
+
+  fetch('https://reqres.in/api/user', {
+    method: 'POST',
+    body: data
+  }).then(res => res.json())
+    .then(data => {
       setTimeout(() => {
         signupModal.style.display = "none";
         document.location.href = '../public/homeAccounting.html';
       }, 2000);
-      console.log('Successfully logged in');
-    } else {
-      signupErrorMessage.textContent = 'This email address already exists';
-      console.error('Error sending data');
-    }
-  } catch (error) {
-    console.error('Error sending data:', error);
-  }
-});
+      console.log(data);
+    })
+    .catch(error => {
+      signupErrorMessage.textContent = 'This';
+      console.log(error);
+    });
+};
+
+const signupForm = document.getElementById('form__signup');
+signupForm.addEventListener("submit", submitSignupForm);
 
 const loginLink = document.getElementById('login__link');
 const signupLink = document.getElementById('signup__link');
