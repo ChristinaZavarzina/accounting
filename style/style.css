@@ -88,7 +88,7 @@ li {
   transform: rotate(-180deg);
 }
 
-.modal, .logout {
+.modal {
   display: none;
   position: fixed;
   z-index: 10;
@@ -104,6 +104,19 @@ li {
   padding: 20px;
   border-radius: 7px;
   width: 50%;
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+  font-size: .8rem;
+  font-weight: bold;
+  color: var(--orange);
+  background-color: #bebebe;
+  width: 350px;
+  margin: 15px auto;
+  word-wrap: break-word;
+  padding: 8px 60px;
 }
 
 .close {
@@ -122,14 +135,8 @@ li {
 
 h2 {
   text-align: center;
-  margin-bottom: 15px;
+  margin: 15px 0;
   font-size: 1.5rem;
-}
-
-#form__signup,
-#form__login, 
-.form__logout {
-  text-align: center;
 }
 
 .input {
@@ -137,23 +144,40 @@ h2 {
   padding: 7px;
   border-radius: 5px;
   border: 1px solid;
+  margin-top: 15px;
 }
 
-.error-text {
+#login__modal .input {
+  margin-bottom: 10px;
+}
+
+.error__text {
   font-size: 0.7rem;
   color: var(--orange);
   display: flex;
   justify-content: center;
   word-wrap: break-word;
-  margin-bottom: 15px;
   padding: 5px 65px;
+}
+
+a {
+  color: var(--orange);
+  font-size: 0.85em;
+  margin-left: 8px;
+}
+
+#login__error-message, #signup__error-message, #reset__error-message {
+  text-decoration: underline;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  margin: 15px;
 }
 
 .submit__btn,
 .yes__btn,
 .no__btn {
   margin-bottom: 15px;
-  margin-top: 15px;
   width: 90px;
   height: 30px;
   background: var(--blue);
@@ -233,12 +257,6 @@ input[type="number"]::-webkit-outer-spin-button {
 
 #category__income, #category__income__filter {
   display: none;
-}
-
-a {
-  color: inherit;
-  font-size: 0.8em;
-  color: var(--orange);
 }
 
 /* End header ------------------------------------------------------------------ */

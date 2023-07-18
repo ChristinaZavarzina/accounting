@@ -21,15 +21,29 @@
       <div class="modal__content">
         <span class="close">&times;</span>
         <h2>Log in</h2>
-        <form id="form__login" novalidate>
+        <span id="not-exist__error" class="hidden">This email and password don't exist</span>
+        <form id="form__login" class="form__login" novalidate>
           <input type="email" name="mail" placeholder="Email" class="input" autocomplete="email">
-          <span class="error-text" id="email-error"></span>
-          <input type="password" name="pass" placeholder="Password" class="input" autocomplete="current-password">
-          <span class="error-text" id="password-error"></span>
-          <a href="#" id="signup__link">No account? Sign up</a><br>
+          <input type="password" name="pass" placeholder="Password" class="input" autocomplete="current-password"><br>
+          <a href="#" id="reset__password">Reset password</a>
+          <a href="#" id="signup__link">No account? Sign up</a>
+          <span id="login__error-message"></span>
           <button type="submit" class="submit__btn">Enter</button>
         </form>
-        <span id="login__error__message"></span>
+      </div>
+    </div>
+
+    <div id="email__modal" class="modal">
+      <div class="modal__content">
+        <span class="close">&times;</span>
+        <h2>Reset Password</h2>
+        <form id="form__email">
+          <input type="email" name="reset-mail" placeholder="Enter your email" class="input" autocomplete="email">
+          <span class="error__text" id="reset__error"></span>
+          <span id="reset__password-message"></span>
+        <span id="reset__error-message"></span>
+          <button type="submit" class="submit__btn">Reset</button>
+        </form>
       </div>
     </div>
   
@@ -39,21 +53,21 @@
         <h2>Registration</h2>
         <form id="form__signup" novalidate>
           <input type="text" name="username" placeholder="Name" class="input" autocomplete="name">
-          <span class="error-text" id="username-error"></span>
+          <span class="error__text" id="username__error"></span>
           <input type="text" name="surname" placeholder="Surname" class="input" autocomplete="name">
-          <span class="error-text" id="surname-error"></span>
+          <span class="error__text" id="surname__error"></span>
           <input type="email" name="mailS" placeholder="Email" class="input" autocomplete="email">
-          <span class="error-text" id="signup-email-error"></span>
+          <span class="error__text" id="signup__email-error"></span>
           <input type="email" name="confirm-mail" placeholder="Confirm your email" class="input" autocomplete="email">
-          <span class="error-text" id="confirm-email-error"></span>
+          <span class="error__text" id="confirm__email-error"></span>
           <input type="password" name="passS" placeholder="Password" class="input" autocomplete="new-password">
-          <span class="error-text" id="signup-password-error"></span>
+          <span class="error__text" id="signup__password-error"></span>
           <input type="password" name="confirm-pass" placeholder="Confirm your password" class="input" autocomplete="new-password">
-          <span class="error-text" id="confirm-password-error"></span>
-          <a href="#" id="login__link">Already have an account? Log in</a><br>
+          <span class="error__text" id="confirm__password-error"></span>
+          <a href="#" id="login__link">Already have an account? Log in</a>
+          <span id="signup__error-message"></span>
           <input type="submit" value="Sign up" class="submit__btn">
         </form>
-        <span id="signup__error__message"></span>
       </div>
     </div>
   </header>

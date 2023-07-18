@@ -3,6 +3,7 @@
 const html = document.querySelector('html');
 const loginModal = document.getElementById('login__modal');
 const signupModal = document.getElementById('signup__modal');
+const emailModal = document.getElementById('email__modal');
 
 const openModal = (modal) => {
   modal.style.display = 'block';
@@ -20,23 +21,49 @@ const openModalHandler = (modal, button) => {
   });
 }
 
+const closeModalHandler = (modal, button) => {
+  button.addEventListener('click', () => {
+    closeModal(modal);
+  });
+}
+
 const loginButton = document.getElementById('open__login');
 const signupButton = document.getElementById('open__signup');
+const resetButton = document.getElementById('reset__password');
 openModalHandler(loginModal, loginButton);
 openModalHandler(signupModal, signupButton);
+openModalHandler(emailModal, resetButton);
+closeModalHandler(loginModal, resetButton);
+
+const clearInputs = () => {
+  const inputFields = document.querySelectorAll('.modal__content input');
+  inputFields.forEach(input => {
+    input.value = '';
+  });
+  const errorTextElements = document.querySelectorAll('.error__text');
+  errorTextElements.forEach(errorText => {
+    errorText.textContent = '';
+  });
+};
 
 const closeButtons = document.getElementsByClassName('close');
 for (let i = 0; i < closeButtons.length; i++) {
   closeButtons[i].addEventListener("click", () => {
-    signupModal.style.display = "none";
-    loginModal.style.display = "none";
+    const modals = document.getElementsByClassName('modal');
+    for (let j = 0; j < modals.length; j++) {
+      modals[j].style.display = 'none';
+    }
+    clearInputs();
   });
 }
 
 document.addEventListener("click", (e) => {
-  if (e.target === loginModal || e.target === signupModal) {
-    loginModal.style.display = "none";
-    signupModal.style.display = "none";
+  if (e.target === loginModal || e.target === signupModal || e.target === emailModal) {
+    const modals = document.getElementsByClassName('modal');
+    for (let j = 0; j < modals.length; j++) {
+      modals[j].style.display = 'none';
+    }
+    clearInputs();
   }
 });
 
@@ -49,26 +76,17 @@ const validateField = (value, regex) => {
 };
 
 const emailInput = document.querySelector('input[name="mail"]');
-const emailError = document.getElementById('email-error');
 const passwordInput = document.querySelector('input[name="pass"]');
-const passwordError = document.getElementById('password-error');
-const loginErrorMessage = document.getElementById('login__error__message');
+const loginErrorMessage = document.getElementById('login__error-message');
+const notExistError = document.getElementById('not-exist__error');
 
 const submitLoginForm = (e) => {
   e.preventDefault();
+  notExistError.classList.add('hidden');
 
-  if (!validateField(emailInput.value, emailRegex)) {
-    emailError.textContent = "Incorrect email format";
+  if (!emailInput.value || !passwordInput.value) {
+    loginErrorMessage.textContent = 'Please fill in both email and password';
     return;
-  } else {
-    emailError.textContent = "";
-  }
-
-  if (!validateField(passwordInput.value, passRegex)) {
-    passwordError.textContent = "The password must contain a minimum of 8 characters, including at least one digit";
-    return;
-  } else {
-    passwordError.textContent = "";
   }
 
   const formData = new FormData(loginForm);
@@ -77,36 +95,40 @@ const submitLoginForm = (e) => {
   fetch('https://reqres.in/api/user', {
     method: 'POST',
     body: data
-  }).then(res => res.json())
-    .then(data => {
-      setTimeout(() => {
-        loginModal.style.display = "none";
-        document.location.href = '../public/homeAccounting.html';
-      }, 2000);
-      console.log(data);
-    })
-    .catch(error => {
-      loginErrorMessage.textContent = 'This';
-      console.log(error);
-    });
+  }).then(res => {
+    if (!res.ok) {
+      notExistError.classList.remove('hidden');
+      throw new Error('User not found');
+    }
+    return res.json();
+  }).then(data => {
+    setTimeout(() => {
+      loginModal.style.display = "none";
+      document.location.href = '../public/homeAccounting.html';
+    }, 2000);
+    console.log(data);
+  }).catch(error => {
+    loginErrorMessage.textContent = 'No server connection';
+    console.log(error);
+  });
 };
 
 const loginForm = document.getElementById('form__login');
 loginForm.addEventListener("submit", submitLoginForm);
 
 const usernameInput = document.querySelector('input[name="username"]');
-const usernameErrorS = document.getElementById('username-error');
+const usernameErrorS = document.getElementById('username__error');
 const surnameInput = document.querySelector('input[name="surname"]');
-const surnameErrorS = document.getElementById('surname-error');
+const surnameErrorS = document.getElementById('surname__error');
 const emailInputS = document.querySelector('input[name="mailS"]');
-const emailErrorS = document.getElementById('signup-email-error');
+const emailErrorS = document.getElementById('signup__email-error');
 const confirmEmailInput = document.querySelector('input[name="confirm-mail"]');
-const confirmEmailErrorS = document.getElementById('confirm-email-error');
+const confirmEmailErrorS = document.getElementById('confirm__email-error');
 const passwordInputS = document.querySelector('input[name="passS"]');
-const passwordErrorS = document.getElementById('signup-password-error');
+const passwordErrorS = document.getElementById('signup__password-error');
 const confirmPassInput = document.querySelector('input[name="confirm-pass"]');
-const confirmPassErrorS = document.getElementById('confirm-password-error');
-const signupErrorMessage = document.getElementById('signup__error__message');
+const confirmPassErrorS = document.getElementById('confirm__password-error');
+const signupErrorMessage = document.getElementById('signup__error-message');
 
 const submitSignupForm = (e) => {
   e.preventDefault();
@@ -168,13 +190,49 @@ const submitSignupForm = (e) => {
       console.log(data);
     })
     .catch(error => {
-      signupErrorMessage.textContent = 'This';
+      signupErrorMessage.textContent = 'No server connection';
       console.log(error);
-    });
+  });
 };
 
 const signupForm = document.getElementById('form__signup');
 signupForm.addEventListener("submit", submitSignupForm);
+
+const emailInputR = document.querySelector('input[name="reset-mail"]');
+const emailErrorR = document.getElementById('reset__error');
+const resetErrorMessage = document.getElementById('reset__error-message');
+
+const submitResetForm = (e) => {
+  e.preventDefault();
+
+  if (!validateField(emailInputR.value, emailRegex)) {
+    emailErrorR.textContent = "Incorrect email format";
+    return;
+  } else {
+    emailErrorR.textContent = "";
+  }
+
+  const formData = new FormData(resetForm);
+  const data = new URLSearchParams(formData);
+
+  fetch('https://reqres.in/api/user', {
+    method: 'POST',
+    body: data
+  }).then(res => res.json())
+    .then(data => {
+      setTimeout(() => {
+        emailModal.style.display = "none";
+      }, 2000);
+      console.log(data);
+    })
+    .catch(error => {
+      resetErrorMessage.textContent = 'No server connection';
+      console.log(error);
+  });
+};
+
+const resetForm = document.getElementById('form__email');
+resetForm.addEventListener("submit", submitResetForm);
 
 const loginLink = document.getElementById('login__link');
 const signupLink = document.getElementById('signup__link');
