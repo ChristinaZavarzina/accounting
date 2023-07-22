@@ -60,8 +60,8 @@ for (let i = 0; i < closeButtons.length; i++) {
 document.addEventListener("click", (e) => {
   if (e.target === loginModal || e.target === signupModal || e.target === emailModal) {
     const modals = document.getElementsByClassName('modal');
-    for (let j = 0; j < modals.length; j++) {
-      modals[j].style.display = 'none';
+    for (let i = 0; i < modals.length; i++) {
+      modals[i].style.display = 'none';
     }
     clearInputs();
   }
@@ -75,17 +75,16 @@ const validateField = (value, regex) => {
   return regex.test(value);
 };
 
-const emailInput = document.querySelector('input[name="mail"]');
-const passwordInput = document.querySelector('input[name="pass"]');
-const loginErrorMessage = document.getElementById('login__error-message');
-const notExistError = document.getElementById('not-exist__error');
-
 const submitLoginForm = (e) => {
+  const emailInput = document.querySelector('input[name="mail"]');
+  const passwordInput = document.querySelector('input[name="pass"]');
+  const errorMessage = document.getElementById('error__message');
+  const notExistError = document.getElementById('not-exist__error');
   e.preventDefault();
   notExistError.classList.add('hidden');
 
   if (!emailInput.value || !passwordInput.value) {
-    loginErrorMessage.textContent = 'Please fill in both email and password';
+    errorMessage.textContent = 'Please fill in both email and password';
     return;
   }
 
@@ -108,29 +107,26 @@ const submitLoginForm = (e) => {
     }, 2000);
     console.log(data);
   }).catch(error => {
-    loginErrorMessage.textContent = 'No server connection';
+    errorMessage.textContent = 'No server connection';
     console.log(error);
   });
 };
-
 const loginForm = document.getElementById('form__login');
 loginForm.addEventListener("submit", submitLoginForm);
 
-const usernameInput = document.querySelector('input[name="username"]');
-const usernameErrorS = document.getElementById('username__error');
-const surnameInput = document.querySelector('input[name="surname"]');
-const surnameErrorS = document.getElementById('surname__error');
-const emailInputS = document.querySelector('input[name="mailS"]');
-const emailErrorS = document.getElementById('signup__email-error');
-const confirmEmailInput = document.querySelector('input[name="confirm-mail"]');
-const confirmEmailErrorS = document.getElementById('confirm__email-error');
-const passwordInputS = document.querySelector('input[name="passS"]');
-const passwordErrorS = document.getElementById('signup__password-error');
-const confirmPassInput = document.querySelector('input[name="confirm-pass"]');
-const confirmPassErrorS = document.getElementById('confirm__password-error');
-const signupErrorMessage = document.getElementById('signup__error-message');
-
 const submitSignupForm = (e) => {
+  const usernameInput = document.querySelector('input[name="username"]');
+  const usernameErrorS = document.getElementById('username__error');
+  const surnameInput = document.querySelector('input[name="surname"]');
+  const surnameErrorS = document.getElementById('surname__error');
+  const emailInputS = document.querySelector('input[name="mailS"]');
+  const emailErrorS = document.getElementById('signup__email-error');
+  const confirmEmailInput = document.querySelector('input[name="confirm-mail"]');
+  const confirmEmailErrorS = document.getElementById('confirm__email-error');
+  const passwordInputS = document.querySelector('input[name="passS"]');
+  const passwordErrorS = document.getElementById('signup__password-error');
+  const confirmPassInput = document.querySelector('input[name="confirm-pass"]');
+  const confirmPassErrorS = document.getElementById('confirm__password-error');
   e.preventDefault();
 
   if (!validateField(usernameInput.value, nameRegex)) {
@@ -190,17 +186,15 @@ const submitSignupForm = (e) => {
       console.log(data);
     })
     .catch(error => {
-      signupErrorMessage.textContent = 'No server connection';
+      errorMessage.textContent = 'No server connection';
       console.log(error);
   });
 };
-
 const signupForm = document.getElementById('form__signup');
 signupForm.addEventListener("submit", submitSignupForm);
 
 const emailInputR = document.querySelector('input[name="reset-mail"]');
 const emailErrorR = document.getElementById('reset__error');
-const resetErrorMessage = document.getElementById('reset__error-message');
 
 const submitResetForm = (e) => {
   e.preventDefault();
@@ -226,17 +220,15 @@ const submitResetForm = (e) => {
       console.log(data);
     })
     .catch(error => {
-      resetErrorMessage.textContent = 'No server connection';
+      errorMessage.textContent = 'No server connection';
       console.log(error);
   });
 };
-
 const resetForm = document.getElementById('form__email');
 resetForm.addEventListener("submit", submitResetForm);
 
 const loginLink = document.getElementById('login__link');
 const signupLink = document.getElementById('signup__link');
-
 loginLink.addEventListener("click", (e) => {
   e.preventDefault();
   setTimeout(() => {

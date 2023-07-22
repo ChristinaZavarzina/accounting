@@ -9,36 +9,35 @@
 <body>
   <header>
     <div class="header">
-      <nav>
-        <ul class="menu__list">
-          <button class="transaction__btn" id="transaction">Create transaction
-            <span class="arrow"></span></button>
-          <button id="filter" class="filter__btn">Filters
-            <span class="arrow"></span></button>
-          </button>
-          <li id="open__logout" class="open__logout">Log out</li>
-        </ul>
-      </nav>
+      <div class="menu__list">
+        <button id="transaction" class="transaction__btn">Create transaction
+          <span class="arrow"></span></button>
+        <button id="filter" class="filter__btn">Filters
+          <span class="arrow"></span></button>
+        <button id="username" class="username__btn">Username
+          <form class="user__block" id="user__block" novalidate>
+            <input type="button" class="change-btn" data-field="name" value="Change name">
+            <input type="button" class="change-btn" data-field="surname" value="Change surname">
+            <input type="button" class="change-btn" data-field="email" value="Change email">
+            <input type="button" class="change-btn" data-field="password" value="Change password">
+            <input type="button" id="open__change-profile" value="Change all profile">
+            <input type="button" id="open__logout" value="Log Out">
+          </form>
+        </button>
+      </div>
     </div>
 
-
-    <form class="transaction__block" id="transaction__block">
+    <form class="transaction__block" id="transaction__block" novalidate>
       <div class="menu__trans">
         <label for="type">Transaction type:</label>
         <select id="type">
           <option value="Expenses">Expenses</option>
           <option value="Income">Income</option>
         </select>
-      </div>
-      <div class="menu__trans">
         <label for="amount">Amount:</label>
         <input type="number" id="amount">
-      </div>
-      <div class="menu__trans">
         <label for="description">Description:</label>
         <input type="text" id="description" autocomplete="off">
-      </div>
-      <div class="menu__trans">
         <label>Category:</label>
         <select id="category__expenses">
           <optgroup label="Products">
@@ -77,33 +76,26 @@
           <option value="Real estate">Real estate</option>
           <option value="Other">Other</option>
       </select>
-      </div>
-      <div class="menu__trans">
         <label for="date">Date:</label>
         <input type="date" id="date">
+      <button type="submit" class="transaction__apply">Apply</button>
       </div>
-      <button type="submit" class="add__btn">Add</button>
     </form>
 
-    <form id="filter__block" class="filter__block">
-      <div class="menu__trans">
-        <label for="type">Transaction type:</label>
+    <form id="filter__block" class="filter__block" novalidate>
+      <div class="menu__filter">
+        <label for="type__filter">Transaction type:</label>
         <select id="type__filter">
           <option value="Expenses">Expenses</option>
           <option value="Income">Income</option>
+          <option value="All">All</option>
         </select>
-      </div>
-      <div class="menu__trans">
-        <label for="date">Start date:</label>
-        <input type="date" id="date__start" class="date">
-      </div>
-      <div class="menu__trans">
-        <label for="date">End date:</label>
-        <input type="date" id="date__end" class="date">
-      </div>
-      <div class="menu__trans">
-        <label>Category:</label>
-        <select id="category__expenses__filter" >
+        <label for="date__start">Start date:</label>
+        <input type="date" id="date__start">
+        <label for="date__end">End date:</label>
+        <input type="date" id="date__end">
+        <label id="category__label">Category:</label>
+        <select id="category__expenses-filter">
           <optgroup label="Products">
             <option value="Foodstuff">Foodstuff</option>
             <option value="Other">Other</option>
@@ -133,21 +125,59 @@
             <option value="Insurance">Insurance</option>
             <option value="Other">Other</option>
           </optgroup>
+          <option value="All Expenses">All Expenses</option>
         </select>
-        <select id="category__income__filter" >
+        <select id="category__income-filter" >
           <option value="Salary">Salary</option>
           <option value="Present">Present</option>
           <option value="Real estate">Real estate</option>
           <option value="Other">Other</option>
+          <option value="All Income">All Income</option>
       </select>
+      <button type="submit" class="filter__apply">Apply</button>
       </div>
-      <button type="submit" class="ok__btn">Ok</button>
     </form>
+
+    <div id="" class="modal">
+      <div class="modal__content">
+        <span class="close">&times;</span>
+        <form id="form" novalidate>
+          <h2 class="modal__itle">Text</h2>
+          <input type="text" name="name" placeholder="Change name" class="input" autocomplete="name" required>
+          <span class="error__text" id=""></span>
+          <input type="submit" value="Submit" class="submit__btn">
+          </form>
+      </div>
+    </div>
+
+    <div id="change__modal-all" class="modal">
+      <div class="modal__content">
+        <span class="close">&times;</span>
+        <h2>Change profile</h2>
+        <form id="form__profile" class="form__profile" novalidate>
+          <input type="text" name="username" placeholder="Change name" class="input" autocomplete="name" required>
+          <span class="error__text" id="username__arror"></span>
+          <input type="text" name="surname" placeholder="Change surname" class="input" autocomplete="name" required>
+          <span class="error__text" id="surname__error"></span>
+          <input type="email" name="mail" placeholder="Change email" class="input" autocomplete="email" required>
+          <span class="error__text" id="email__error"></span>
+          <input type="email" name="confirm-mail" placeholder="Confirm your email" class="input" autocomplete="email" required>
+          <span class="error__text" id="confirm__email-error"></span>
+          <input type="password" name="pass" placeholder="Change password" class="input" autocomplete="new-password" required>
+          <span class="error__text" id="change__pass-error"></span>
+          <input type="password" name="confirm-pass" placeholder="Confirm your password" class="input" autocomplete="new-password" required>
+          <span class="error__text" id="confirm__pass-error"></span>
+          <span id="error__message"></span>
+          <span id="info" class="info">You have successfully changed your data!</span><br>
+          <button type="submit" class="submit__btn">Save changes</button>
+        </form>
+      </div>
+    </div>
 
     <div id="logout__modal" class="modal">
       <div class="modal__content">
         <span class="close">&times;</span>
-        <form id="form__logout">
+        <form id="form__logout" novalidate>
           <h2>Log out</h2>
           <input type="button" value="Yes" class="yes__btn">
           <input type="button" value="No" class="no__btn">

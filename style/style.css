@@ -55,13 +55,13 @@ li {
   position: relative;
   background-color: transparent;
   color: var(--white);
-  margin-right: 550px;
+  margin-right: 500px;
   font-size: 1.05rem;
 }
 
 .filter__btn .arrow {
   left: 52px;
-  top: 20px;
+  top: 6px;
 }
 
 .transaction__btn {
@@ -74,7 +74,7 @@ li {
 
 .arrow {
   position: absolute;
-  top: 21px;
+  top: 7px;
   left: 150px;
   width: 0;
   height: 0;
@@ -86,6 +86,14 @@ li {
 
 .arrow.active {
   transform: rotate(-180deg);
+}
+
+.username__btn {
+  position: relative;
+  background-color: transparent;
+  color: var(--white);
+  margin-right: 50px;
+  font-size: .8rem;
 }
 
 .modal {
@@ -109,14 +117,19 @@ li {
 
 .hidden {
   display: none;
-  font-size: .8rem;
+  font-size: .9rem;
+  font-weight: bold;
+  color: black;
+  background-color: #e0e0e0;
+  margin: 15px auto;
+  padding: 5px 50px;
+}
+
+.info {
+  display: none;
+  font-size: .85rem;
   font-weight: bold;
   color: var(--orange);
-  background-color: #bebebe;
-  width: 350px;
-  margin: 15px auto;
-  word-wrap: break-word;
-  padding: 8px 60px;
 }
 
 .close {
@@ -166,19 +179,20 @@ a {
   margin-left: 8px;
 }
 
-#login__error-message, #signup__error-message, #reset__error-message {
+#error__message {
   text-decoration: underline;
   font-weight: bold;
   display: flex;
   justify-content: center;
-  margin: 15px;
+  margin: 10px;
+  padding: 0px 65px;
 }
 
 .submit__btn,
 .yes__btn,
 .no__btn {
-  margin-bottom: 15px;
-  width: 90px;
+  margin: 15px 0;
+  width: 95px;
   height: 30px;
   background: var(--blue);
   color: var(--white);
@@ -186,12 +200,38 @@ a {
   border: none;
 }
 
-.transaction__block {
-  width: 180px;
+.no__btn {
+  margin-left: 15px;
+}
+
+.user__block {
+  width: 125px;
   display: none;
   position: absolute;
   top: 0;
-  transform: translate(85px, 50px);
+  transform: translate(-30px, 20px);
+  background-color: var(--white);
+  border-radius: 0 0 5px 5px;
+  padding: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+.user__block input {
+  font-size: 0.75rem;
+  border-bottom: 1px dashed black;
+  width: 100%;
+  padding: 3px;
+  margin: auto;
+  margin-bottom: 7px;
+  background-color: #e2e2e2;
+}
+
+.transaction__block {
+  width: 170px;
+  display: none;
+  position: absolute;
+  top: 0;
+  transform: translate(100px, 50px);
   background-color: var(--white);
   border-radius: 0 0 7px 7px;
   padding: 8px;
@@ -199,39 +239,30 @@ a {
 }
 
 .filter__block {
-  width: 140px;
+  width: 130px;
   display: none;
   position: absolute;
   top: 0;
-  transform: translate(325px, 50px);
+  transform: translate(340px, 50px);
   background-color: var(--white);
   border-radius: 0 0 7px 7px;
   padding: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
 }
 
-.menu__trans {
+.menu__trans, .menu__filter {
   padding-bottom: 8px;
   font-size: 0.85rem;
 }
 
-#amount, #description,
-#category__expenses,
-#category__income,
-#category__expenses__filter,
-#category__income__filter,
-#date, #date__end,
-#date__start {
-  width: 100%;
-}
-
-.menu__trans input, select {
+.menu__trans input, select, .menu__filter input {
   display: flex;
   border: 1px solid;
   border-radius: 4px;
   padding: 4px;
   margin-top: 4px;
   font-size: 0.85rem;
+  width: 100%;
 }
 
 input[type="number"]::-webkit-inner-spin-button,
@@ -240,7 +271,7 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 0;
 }
 
-.add__btn, .ok__btn {
+.filter__apply, .transaction__apply {
   margin-bottom: 10px;
   margin-top: 10px;
   width: 70px;
@@ -251,11 +282,11 @@ input[type="number"]::-webkit-outer-spin-button {
   border: none;
 }
 
-#category__expenses, #category__expenses__filter {
+#category__expenses, #category__expenses-filter {
   display: block;
 }
 
-#category__income, #category__income__filter {
+#category__income, #category__income-filter {
   display: none;
 }
 
@@ -267,6 +298,7 @@ main {
   background-color: var(--blue);
   width: 100%;
   height: 86%;
+  cursor: default
 }
 
 #body__container {
@@ -286,6 +318,28 @@ h1 {
   margin: 15px 0;
   padding: 0 50px;
   font-size: 1.1rem;
+}
+
+.balance__container {
+  display: flex;
+  color: var(--white);
+  align-items: center;
+  font-weight: bold;
+  justify-content: center;
+  text-decoration: underline 2px;
+}
+
+.screen__balance {
+  margin-left: 5px;
+  border-radius: 3px;
+  color: black;
+  text-align: center;
+  border: 1px solid black;
+  width: 45px;
+  font-size: .85rem;
+  background-color: var(--white);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  cursor: default;
 }
 
 .table__container {
