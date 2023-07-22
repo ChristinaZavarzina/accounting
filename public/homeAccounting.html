@@ -35,7 +35,7 @@
           <option value="Income">Income</option>
         </select>
         <label for="amount">Amount:</label>
-        <input type="number" id="amount">
+        <input type="number" id="amount" inputmode="numeric">
         <label for="description">Description:</label>
         <input type="text" id="description" autocomplete="off">
         <label>Category:</label>
@@ -138,17 +138,7 @@
       </div>
     </form>
 
-    <div id="" class="modal">
-      <div class="modal__content">
-        <span class="close">&times;</span>
-        <form id="form" novalidate>
-          <h2 class="modal__itle">Text</h2>
-          <input type="text" name="name" placeholder="Change name" class="input" autocomplete="name" required>
-          <span class="error__text" id=""></span>
-          <input type="submit" value="Submit" class="submit__btn">
-          </form>
-      </div>
-    </div>
+    <div id="container__modal" class="modal"></div>
 
     <div id="change__modal-all" class="modal">
       <div class="modal__content">

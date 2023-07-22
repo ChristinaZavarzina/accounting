@@ -335,11 +335,12 @@ h1 {
   color: black;
   text-align: center;
   border: 1px solid black;
-  width: 45px;
+  width: 80px;
   font-size: .85rem;
   background-color: var(--white);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   cursor: default;
+  padding: 2px;
 }
 
 .table__container {

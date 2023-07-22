@@ -368,6 +368,20 @@ filterApply.addEventListener("click", (e) => {
   filterArrow.classList.remove('active');
 });
 
+
+const containerModal = document.getElementById('container__modal');
+/* 
+<div class="modal__content">
+  <span class="close">&times;</span>
+  <form id="form" novalidate>
+    <h2 class="modal__itle">Text</h2>
+    <input type="text" name="name" placeholder="Change name" class="input" autocomplete="name" required>
+    <span class="error__text" id=""></span>
+    <input type="submit" value="Submit" class="submit__btn">
+    </form>
+</div>
+ */
+
 // BODY -------------------------------------------------------------------------------------------
 
 const bodyContainer = document.getElementById('body__container');
@@ -415,8 +429,6 @@ const calcTotalBalance = () => {
 
     if (!isNaN(amount)) {
       totalBalance += amount;
-    } else {
-      console.log('Amount is not a number');
     }
   });
 
