@@ -127,6 +127,8 @@ li {
 
 .info {
   display: none;
+  background-color: #f6dfd1;
+  padding: 8px;
   font-size: .85rem;
   font-weight: bold;
   color: var(--orange);
@@ -181,6 +183,15 @@ a {
 
 #error__message {
   text-decoration: underline;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  margin: 10px;
+  padding: 0px 65px;
+}
+
+#not-exist__error {
+  background-color: var(--orange);
   font-weight: bold;
   display: flex;
   justify-content: center;

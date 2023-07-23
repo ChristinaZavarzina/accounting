@@ -45,15 +45,15 @@ for (let i = 0; i < closeButtons.length; i++) {
   });
 }
 
-document.addEventListener("click", (e) => {
-  if (e.target === logoutModal || e.target === changeModalAll) {
-    const modals = document.getElementsByClassName('modal');
-    for (let i = 0; i < modals.length; i++) {
-      modals[i].style.display = 'none';
-    }
-    clearInputs();
-  }
-});
+// document.addEventListener("click", (e) => {
+//   if (e.target === logoutModal || e.target === changeModalAll) {
+//     const modals = document.getElementsByClassName('modal');
+//     for (let i = 0; i < modals.length; i++) {
+//       modals[i].style.display = 'none';
+//     }
+//     clearInputs();
+//   }
+// });
 
 const yesBtn = document.querySelector('.yes__btn');
 const noBtn = document.querySelector('.no__btn');
@@ -370,6 +370,9 @@ filterApply.addEventListener("click", (e) => {
 
 
 const containerModal = document.getElementById('container__modal');
+
+
+
 /* 
 <div class="modal__content">
   <span class="close">&times;</span>

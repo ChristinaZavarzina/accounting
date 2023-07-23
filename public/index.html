@@ -21,7 +21,7 @@
       <div class="modal__content">
         <span class="close">&times;</span>
         <h2>Log in</h2>
-        <span id="not-exist__error" class="hidden">This email and password don't exist</span>
+        <span id="not-exist__error"></span>
         <form id="form__login" novalidate>
           <input type="email" name="mail" placeholder="Email" class="input" autocomplete="email" required>
           <input type="password" name="pass" placeholder="Password" class="input" autocomplete="current-password" required><br>
@@ -37,12 +37,31 @@
       <div class="modal__content">
         <span class="close">&times;</span>
         <h2>Reset Password</h2>
+        <span id="not-exist__error"></span>
         <form id="form__email">
           <input type="email" name="reset-mail" placeholder="Enter your email" class="input" autocomplete="email" required>
           <span class="error__text" id="reset__error"></span>
-          <span id="reset__password-message"></span>
           <span id="error__message"></span>
+          <span id="info" class="info">Please check your e-mail</span><br>
           <button type="submit" class="submit__btn">Reset</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="pass__modal" class="modal">
+      <div class="modal__content">
+        <span class="close">&times;</span>
+        <h2>New Password</h2>
+        <span id="not-exist__error"></span>
+        <form id="form__pass">
+          <input type="text" name="name" style="display: none;" aria-hidden="true" autocomplete="username">
+          <input type="password" name="new-password" placeholder="Enter your password" class="input" autocomplete="new-password" required>
+          <span class="error__text" id="password__error"></span>
+          <input type="password" name="confirm__new-password" placeholder="Confirm your password" class="input" autocomplete="new-password" required>
+          <span class="error__text" id="confirm__password-error"></span>
+          <span id="error__message"></span>
+          <span id="info" class="info">Please check your e-mail</span><br>
+          <button type="submit" class="submit__btn">Save password</button>
         </form>
       </div>
     </div>
@@ -51,6 +70,7 @@
       <div class="modal__content">
         <span class="close">&times;</span>
         <h2>Registration</h2>
+        <span id="not-exist__error"></span>
         <form id="form__signup" novalidate>
           <input type="text" name="username" placeholder="Name" class="input" autocomplete="name" required>
           <span class="error__text" id="username__error"></span>
