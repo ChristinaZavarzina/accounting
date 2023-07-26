@@ -4,7 +4,7 @@ const html = document.querySelector('html');
 const loginModal = document.getElementById('login__modal');
 const signupModal = document.getElementById('signup__modal');
 const emailModal = document.getElementById('email__modal');
-const passlModal = document.getElementById('pass__modal');
+const passModal = document.getElementById('pass__modal');
 
 const openModal = (modal) => {
   modal.style.display = 'block';
@@ -67,9 +67,28 @@ const validateField = (value, regex) => {
   return regex.test(value);
 };
 
-const errorMessage = document.getElementById('error__message');
-const notExistError = document.getElementById('not-exist__error');
-const infoSucces = document.getElementById('info');
+const errorMessage = document.querySelectorAll('.error__message');
+const notExistError = document.querySelectorAll('.not-exist__error');
+const infoSucces = document.querySelectorAll('.info');
+
+const showElement = (elements) => {
+  elements.forEach(element => {
+    element.style.display = "block";
+  });
+};
+
+const hideElement = (elements) => {
+  elements.forEach(element => {
+    element.style.display = "none";
+  });
+};
+
+const setMessage = (elements, message) => {
+  elements.forEach(element => {
+    element.textContent = message;
+  });
+};
+
 
 const submitLoginForm = (e) => {
   const emailInput = document.querySelector('input[name="mail"]');
@@ -77,7 +96,7 @@ const submitLoginForm = (e) => {
   e.preventDefault();
 
   if (!emailInput.value || !passwordInput.value) {
-    errorMessage.textContent = 'Please fill in both email and password';
+    setMessage(errorMessage, "Please fill in both email and password");
     return;
   }
 
@@ -95,11 +114,11 @@ const submitLoginForm = (e) => {
         document.location.href = '../public/homeAccounting.html';
       }, 2000);
     } else {
-      notExistError.textContent = data;
+      setMessage(notExistError, data);
     }
     console.log(data);
   }).catch(error => {
-    errorMessage.textContent = 'No server connection';
+    setMessage(errorMessage, "No server connection");
     console.log(error);
   });
 };
@@ -177,16 +196,24 @@ const submitSignupForm = (e) => {
         document.location.href = '../public/homeAccounting.html';
       }, 2000);
     } else {
-      notExistError.textContent = data;
+      setMessage(notExistError, data);
     }
     console.log(data);
   }).catch(error => {
-    errorMessage.textContent = 'No server connection';
+    setMessage(errorMessage, "No server connection");
     console.log(error);
   });
 };
 const signupForm = document.getElementById('form__signup');
 signupForm.addEventListener("submit", submitSignupForm);
+
+const handleServerResponse = (data) => {
+  if (data.success === true) {
+    passForm.style.display = "block";
+  } else {
+    setMessage(errorMessage, "No server connection"); // текст моно любой
+  }
+};
 
 const submitResetForm = (e) => {
   e.preventDefault();
@@ -199,7 +226,7 @@ const submitResetForm = (e) => {
   } else {
     emailErrorR.textContent = "";
   }
-  infoSucces.style.display = "block";
+  showElement(infoSucces);
 
   const formData = new FormData(resetForm);
   const data = new URLSearchParams(formData);
@@ -209,18 +236,17 @@ const submitResetForm = (e) => {
     body: data
   }).then(res => res.json())
   .then(data => {
-    if (data) {
+    if (data.success === true) {
       setTimeout(() => {
-        emailModal.style.display = "none";
-        passlModal.style.display = "block";
-        infoSucces.style.display = "none";
+        handleServerResponse(data);
+        hideElement(infoSucces);
       }, 2000);
     } else {
-      notExistError.textContent = data;
+      setMessage(notExistError, data);
     }
     console.log(data);
   }).catch(error => {
-    errorMessage.textContent = 'No server connection';
+    setMessage(errorMessage, "No server connection");
     console.log(error);
   });
 };
@@ -247,9 +273,9 @@ const submitPassForm = (e) => {
   } else {
     passConfirmErrorR.textContent = "";
   }
-  infoSucces.style.display = "block";
+  showElement(infoSucces);
 
-  const formData = new FormData(resetForm);
+  const formData = new FormData(passForm);
   const data = new URLSearchParams(formData);
 
   fetch('https://reqres.in/api/user', {
@@ -257,17 +283,17 @@ const submitPassForm = (e) => {
     body: data
   }).then(res => res.json())
   .then(data => {
-    if (data) {
+    if (data.success === true) {
       setTimeout(() => {
-        passlModal.style.display = "none";
-        infoSucces.style.display = "none";
+        passModal.style.display = "none";
+        hideElement(infoSucces);
       }, 2000);
     } else {
-      notExistError.textContent = data;
+      setMessage(notExistError, data);
     }
     console.log(data);
   }).catch(error => {
-    errorMessage.textContent = 'No server connection';
+    setMessage(errorMessage, "No server connection");
     console.log(error);
   });
 };

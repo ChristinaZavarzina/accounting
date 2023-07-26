@@ -181,7 +181,7 @@ a {
   margin-left: 8px;
 }
 
-#error__message {
+.error__message {
   text-decoration: underline;
   font-weight: bold;
   display: flex;
@@ -190,7 +190,7 @@ a {
   padding: 0px 65px;
 }
 
-#not-exist__error {
+.not-exist__error {
   background-color: var(--orange);
   font-weight: bold;
   display: flex;

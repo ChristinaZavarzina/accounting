@@ -16,10 +16,10 @@
           <span class="arrow"></span></button>
         <button id="username" class="username__btn">Username
           <form class="user__block" id="user__block" novalidate>
-            <input type="button" class="change-btn" data-field="name" value="Change name">
-            <input type="button" class="change-btn" data-field="surname" value="Change surname">
-            <input type="button" class="change-btn" data-field="email" value="Change email">
-            <input type="button" class="change-btn" data-field="password" value="Change password">
+            <input type="button" id="name__btn" value="Change name">
+            <input type="button" id="surname__btn" value="Change surname">
+            <input type="button" id="email__btn" value="Change email">
+            <input type="button" id="pass__btn" value="Change password">
             <input type="button" id="open__change-profile" value="Change all profile">
             <input type="button" id="open__logout" value="Log Out">
           </form>
@@ -138,18 +138,19 @@
       </div>
     </form>
 
-    <div id="container__modal" class="modal"></div>
+    <div id="container__modal"></div>
 
     <div id="change__modal-all" class="modal">
       <div class="modal__content">
         <span class="close">&times;</span>
         <h2>Change profile</h2>
+        <span class="not-exist__error"></span>
         <form id="form__profile" class="form__profile" novalidate>
           <input type="text" name="username" placeholder="Change name" class="input" autocomplete="name" required>
           <span class="error__text" id="username__arror"></span>
           <input type="text" name="surname" placeholder="Change surname" class="input" autocomplete="name" required>
           <span class="error__text" id="surname__error"></span>
-          <input type="email" name="mail" placeholder="Change email" class="input" autocomplete="email" required>
+          <input type="email" name="email" placeholder="Change email" class="input" autocomplete="email" required>
           <span class="error__text" id="email__error"></span>
           <input type="email" name="confirm-mail" placeholder="Confirm your email" class="input" autocomplete="email" required>
           <span class="error__text" id="confirm__email-error"></span>
@@ -157,8 +158,8 @@
           <span class="error__text" id="change__pass-error"></span>
           <input type="password" name="confirm-pass" placeholder="Confirm your password" class="input" autocomplete="new-password" required>
           <span class="error__text" id="confirm__pass-error"></span>
-          <span id="error__message"></span>
-          <span id="info" class="info">You have successfully changed your data!</span><br>
+          <span class="error__message"></span>
+          <span class="info">You have successfully changed your data!</span><br>
           <button type="submit" class="submit__btn">Save changes</button>
         </form>
       </div>

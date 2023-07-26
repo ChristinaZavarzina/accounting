@@ -1,8 +1,55 @@
 "use strict"
 
+const modalData = [
+  { title: "Change name", buttonText: "Save name", identifier: "name" },
+  { title: "Change surname", buttonText: "Save surname", identifier: "secondname" },
+  { title: "Change email", buttonText: "Save email", identifier: "mail" },
+  { title: "Change password", buttonText: "Save password", identifier: "password", passwordFields: true, },
+];
+
+modalData.forEach((data) => {
+  const errorId = `error__${data.identifier}`;
+  const nameForm = `form__${data.identifier}`;
+  const nameModal = `${data.identifier}__modal`;
+
+  const modalContent = `
+  <div id="${nameModal}" class="modal">
+    <div class="modal__content">
+      <span class="close">&times;</span>
+      <form id="${nameForm}" novalidate>
+        <h2 class="modal__title">${data.title}</h2>
+        <span class="not-exist__error"></span>
+      ${
+        data.passwordFields
+          ? `
+        <input type="text" name="name" style="display: none;" aria-hidden="true" autocomplete="username">
+        <input type="password" name="${data.identifier}" placeholder="Enter password" class="input" autocomplete="new-password" required>
+        <input type="password" name="${data.identifier}__confirm" placeholder="Confirm password" class="input" autocomplete="new-password" required>
+      `
+          : `
+        <input type="text" name="${data.identifier}" placeholder="${data.title}" class="input" autocomplete="off" required>
+      `
+      }
+        <span class="error__text" id="${errorId}"></span>
+        <span class="error__message"></span>
+        <span class="info">You have successfully changed your data!</span><br>
+        <input type="submit" value="${data.buttonText}" class="submit__btn">
+      </form>
+    </div>
+  </div>
+  `;
+
+  const containerModal = document.getElementById('container__modal');
+  containerModal.insertAdjacentHTML('afterbegin', modalContent);
+});
+
 const html = document.querySelector('html');
 const logoutModal = document.getElementById('logout__modal');
 const changeModalAll = document.getElementById('change__modal-all');
+const nameModal = document.getElementById('name__modal');
+const surnameModal = document.getElementById('secondname__modal');
+const emailModal = document.getElementById('mail__modal');
+const passwordModal = document.getElementById('password__modal');
 
 const openModal = (modal) => {
   modal.style.display = 'block';
@@ -20,8 +67,16 @@ const openModalHandler = (modal, button) => {
 }
 const logoutButton = document.getElementById('open__logout');
 const changeButton = document.getElementById('open__change-profile');
+const nameButton = document.getElementById('name__btn');
+const surnameButton = document.getElementById('surname__btn');
+const emailButton = document.getElementById('email__btn');
+const passwordButton = document.getElementById('pass__btn');
 openModalHandler(logoutModal, logoutButton);
 openModalHandler(changeModalAll, changeButton);
+openModalHandler(nameModal, nameButton);
+openModalHandler(surnameModal, surnameButton);
+openModalHandler(emailModal, emailButton);
+openModalHandler(passwordModal, passwordButton);
 
 const clearInputs = () => {
   const inputFields = document.querySelectorAll('.form__profile input');
@@ -44,16 +99,6 @@ for (let i = 0; i < closeButtons.length; i++) {
     clearInputs();
   });
 }
-
-// document.addEventListener("click", (e) => {
-//   if (e.target === logoutModal || e.target === changeModalAll) {
-//     const modals = document.getElementsByClassName('modal');
-//     for (let i = 0; i < modals.length; i++) {
-//       modals[i].style.display = 'none';
-//     }
-//     clearInputs();
-//   }
-// });
 
 const yesBtn = document.querySelector('.yes__btn');
 const noBtn = document.querySelector('.no__btn');
@@ -144,12 +189,42 @@ menuFilt.addEventListener("click", (e) => {
   e.stopPropagation();
 });
 
+const nameRegex = /^[a-zA-Z\s]+$/;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const passRegex = /^(?=.*\d)[a-zA-Z\d]{8,}$/;
+
+const validateField = (value, regex) => {
+  return regex.test(value);
+};
+
+const errorMessage = document.querySelectorAll('.error__message');
+const notExistError = document.querySelectorAll('.not-exist__error');
+const infoSucces = document.querySelectorAll('.info');
+
+const showElement = (elements) => {
+  elements.forEach(element => {
+    element.style.display = "block";
+  });
+};
+
+const hideElement = (elements) => {
+  elements.forEach(element => {
+    element.style.display = "none";
+  });
+};
+
+const setMessage = (elements, message) => {
+  elements.forEach(element => {
+    element.textContent = message;
+  });
+};
+
 const submitChangeForm = (e) => {
   const usernameInput = document.querySelector('input[name="username"]');
   const usernameError = document.getElementById('username__arror');
   const surnameInput = document.querySelector('input[name="surname"]');
   const surnameError = document.getElementById('surname__error');
-  const emailInput = document.querySelector('input[name="mail"]');
+  const emailInput = document.querySelector('input[name="email"]');
   const emailError = document.getElementById('email__error');
   const confirmEmailInput = document.querySelector('input[name="confirm-mail"]');
   const confirmEmailError = document.getElementById('confirm__email-error');
@@ -157,17 +232,7 @@ const submitChangeForm = (e) => {
   const passError = document.getElementById('change__pass-error');
   const confirmPassInput = document.querySelector('input[name="confirm-pass"]');
   const confirmPassError = document.getElementById('confirm__pass-error');
-  const errorMessage = document.getElementById('error__message');
-  const infoSucces = document.getElementById('info');
   e.preventDefault();
-
-  const nameRegex = /^[a-zA-Z\s]+$/;
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passRegex = /^(?=.*\d)[a-zA-Z\d]{8,}$/;
-
-  const validateField = (value, regex) => {
-  return regex.test(value);
-};
 
   if (!validateField(usernameInput.value, nameRegex)) {
     usernameError.textContent = "Incorrect username format";
@@ -210,26 +275,28 @@ const submitChangeForm = (e) => {
   } else {
     confirmPassError.textContent = "";
   }
-  infoSucces.style.display = 'block';
+  showElement(infoSucces);
 
   const formData = new FormData(changeForm);
   const data = new URLSearchParams(formData);
 
-  fetch('https://reqres.in/api/user', {
+  fetch('https://reqres.in/api/home', {
     method: 'POST',
     body: data
   }).then(res => res.json())
-    .then(data => {
+  .then(data => {
+    if (data) {
       setTimeout(() => {
         changeModalAll.style.display = "none";
-        infoSucces.style.display = 'none'
-        clearInputs();
+        hideElement(infoSucces);
       }, 2000);
-      console.log(data);
-    })
-    .catch(error => {
-      errorMessage.textContent = 'No server connection';
-      console.log(error);
+    } else {
+      setMessage(notExistError, data);
+    }
+    console.log(data);
+  }).catch(error => {
+    setMessage(errorMessage, "No server connection");
+    console.log(error);
   });
 };
 const changeForm = document.getElementById('form__profile');
@@ -287,7 +354,7 @@ transactionApply.addEventListener("click", (e) => {
     date: dateInput.value,
   };
   
-  fetch('https://reqres.in/api/user', {
+  fetch('https://reqres.in/api/home', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -296,43 +363,49 @@ transactionApply.addEventListener("click", (e) => {
   })
   .then(response => response.json())
   .then(data => {
-    const createTable = document.getElementById('table__body');
-    const newRow = createTable.insertRow(0);
-    const typeCell = newRow.insertCell();
-    typeCell.textContent = transactionData.type;
-    const amountCell = newRow.insertCell();
-    amountCell.textContent = transactionData.amount;
-    const descriptionCell = newRow.insertCell();
-    descriptionCell.textContent = transactionData.description;
-    const categoryCell = newRow.insertCell();
-    categoryCell.textContent = transactionData.category;
-    const dateCell = newRow.insertCell();
-    dateCell.textContent = transactionData.date;
-    const deleteCell = newRow.insertCell();
-    
-    const deleteBtn = document.createElement('button');
-    deleteBtn.textContent = 'Delete';
-    deleteBtn.classList.add('btn__delete');
-    deleteBtn.addEventListener("click", () => {
-    createTable.deleteRow(newRow.rowIndex);
-    displayTotalBalance();
-    });
-    deleteCell.append(deleteBtn);
-    
-    amountInput.value = '';
-    descriptionInput.value = '';
-    categoryExpenses.value = 'Foodstuff';
-    categoryIncome.value = 'Salary';
-    dateInput.value = '';
-    
-    transactionBlock.style.display = 'none';
-    filterBlock.style.display = 'none';
-    transactionArrow.classList.remove('active');
-    filterArrow.classList.remove('active');
-    displayTotalBalance();
+    if (data) {
+      console.log(data);
+      const createTable = document.getElementById('table__body');
+      const newRow = createTable.insertRow(0);
+      const typeCell = newRow.insertCell();
+      typeCell.textContent = transactionData.type;
+      const amountCell = newRow.insertCell();
+      amountCell.textContent = transactionData.amount;
+      const descriptionCell = newRow.insertCell();
+      descriptionCell.textContent = transactionData.description;
+      const categoryCell = newRow.insertCell();
+      categoryCell.textContent = transactionData.category;
+      const dateCell = newRow.insertCell();
+      dateCell.textContent = transactionData.date;
+      const deleteCell = newRow.insertCell();
+      
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = 'Delete';
+      deleteBtn.classList.add('btn__delete');
+      deleteBtn.addEventListener("click", () => {
+      createTable.deleteRow(newRow.rowIndex);
+      displayTotalBalance();
+      });
+      deleteCell.append(deleteBtn);
+
+      amountInput.value = '';
+      descriptionInput.value = '';
+      categoryExpenses.value = 'Foodstuff';
+      categoryIncome.value = 'Salary';
+      dateInput.value = '';
+
+      transactionBlock.style.display = 'none';
+      filterBlock.style.display = 'none';
+      transactionArrow.classList.remove('active');
+      filterArrow.classList.remove('active');
+      displayTotalBalance();
+    } else {
+      console.log(setMessage(notExistError, data));
+    }
   })
   .catch(error => {
-    console.error('No server connection:', error);
+    console.log(setMessage(errorMessage, "No server connection"));
+    console.log(error);
   });
 });
 
@@ -368,22 +441,6 @@ filterApply.addEventListener("click", (e) => {
   filterArrow.classList.remove('active');
 });
 
-
-const containerModal = document.getElementById('container__modal');
-
-
-
-/* 
-<div class="modal__content">
-  <span class="close">&times;</span>
-  <form id="form" novalidate>
-    <h2 class="modal__itle">Text</h2>
-    <input type="text" name="name" placeholder="Change name" class="input" autocomplete="name" required>
-    <span class="error__text" id=""></span>
-    <input type="submit" value="Submit" class="submit__btn">
-    </form>
-</div>
- */
 
 // BODY -------------------------------------------------------------------------------------------
 
