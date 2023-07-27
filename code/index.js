@@ -3,7 +3,7 @@
 const html = document.querySelector('html');
 const loginModal = document.getElementById('login__modal');
 const signupModal = document.getElementById('signup__modal');
-const emailModal = document.getElementById('email__modal');
+const resetModal = document.getElementById('reset__modal');
 const passModal = document.getElementById('pass__modal');
 
 const openModal = (modal) => {
@@ -34,7 +34,7 @@ const signupButton = document.getElementById('open__signup');
 const resetButton = document.getElementById('reset__password');
 openModalHandler(loginModal, loginButton);
 openModalHandler(signupModal, signupButton);
-openModalHandler(emailModal, resetButton);
+openModalHandler(resetModal, resetButton);
 closeModalHandler(loginModal, resetButton);
 
 const clearInputs = () => {
@@ -73,13 +73,17 @@ const infoSucces = document.querySelectorAll('.info');
 
 const showElement = (elements) => {
   elements.forEach(element => {
-    element.style.display = "block";
+    if (element) {
+      element.style.display = "block";
+    }
   });
 };
 
 const hideElement = (elements) => {
   elements.forEach(element => {
-    element.style.display = "none";
+    if (element) {
+      element.style.display = "none";
+    }
   });
 };
 
@@ -88,7 +92,6 @@ const setMessage = (elements, message) => {
     element.textContent = message;
   });
 };
-
 
 const submitLoginForm = (e) => {
   const emailInput = document.querySelector('input[name="mail"]');
@@ -106,11 +109,16 @@ const submitLoginForm = (e) => {
   fetch('https://reqres.in/api/user', {
     method: 'POST',
     body: data
-  }).then(res => res.json())
-  .then(data => {
+  }).then(res => {
+    if (!res.ok) {
+      throw new Error("Server error");
+    }
+    return res.json()
+  }).then(data => {
     if (data) {
       setTimeout(() => {
         loginModal.style.display = "none";
+        clearInputs();
         document.location.href = '../public/homeAccounting.html';
       }, 2000);
     } else {
@@ -181,6 +189,7 @@ const submitSignupForm = (e) => {
   } else {
     confirmPassErrorS.textContent = "";
   }
+  showElement(infoSucces);
 
   const formData = new FormData(signupForm);
   const data = new URLSearchParams(formData);
@@ -188,12 +197,17 @@ const submitSignupForm = (e) => {
   fetch('https://reqres.in/api/user', {
     method: 'POST',
     body: data
-  }).then(res => res.json())
-  .then(data => {
+  }).then(res => {
+    if (!res.ok) {
+      throw new Error("Server error");
+    }
+    return res.json()
+  }).then(data => {
     if (data) {
       setTimeout(() => {
         signupModal.style.display = "none";
-        document.location.href = '../public/homeAccounting.html';
+        hideElement(infoSucces);
+        clearInputs();
       }, 2000);
     } else {
       setMessage(notExistError, data);
@@ -206,14 +220,6 @@ const submitSignupForm = (e) => {
 };
 const signupForm = document.getElementById('form__signup');
 signupForm.addEventListener("submit", submitSignupForm);
-
-const handleServerResponse = (data) => {
-  if (data.success === true) {
-    passForm.style.display = "block";
-  } else {
-    setMessage(errorMessage, "No server connection"); // текст моно любой
-  }
-};
 
 const submitResetForm = (e) => {
   e.preventDefault();
@@ -231,15 +237,20 @@ const submitResetForm = (e) => {
   const formData = new FormData(resetForm);
   const data = new URLSearchParams(formData);
 
-  fetch('https://reqres.in/api/user', {
+  fetch('https://reqres.in/api/reset', {
     method: 'POST',
     body: data
-  }).then(res => res.json())
-  .then(data => {
-    if (data.success === true) {
+  }).then(res => {
+    if (!res.ok) {
+      throw new Error("Server error");
+    }
+    return res.json()
+  }).then(data => {
+    if (data) {
       setTimeout(() => {
-        handleServerResponse(data);
+        resetModal.style.display = "none";
         hideElement(infoSucces);
+        clearInputs();
       }, 2000);
     } else {
       setMessage(notExistError, data);
@@ -252,6 +263,23 @@ const submitResetForm = (e) => {
 };
 const resetForm = document.getElementById('form__email');
 resetForm.addEventListener("submit", submitResetForm);
+
+// Проверка наличия токена в параметрах URL
+const urlParams = new URLSearchParams(window.location.search);
+const resetToken = urlParams.get('token'); // Здесь 'token' - это имя параметра в URL, в котором передается токен
+// Функция для открытия модального окна изменения пароля с передачей токена
+const openResetPasswordModal = (token) => {
+  if (token) {
+    // Откройте модальное окно изменения пароля
+    openModal(passModal);
+    // Здесь вы можете установить токен в скрытое поле модального окна, чтобы его можно было передать на сервер при отправке нового пароля
+    const tokenInput = document.querySelector('input[name="reset-token"]');
+    tokenInput.value = token;
+  }
+};
+// Вызов функции для открытия модального окна, если токен присутствует в URL
+openResetPasswordModal(resetToken);
+
 
 const submitPassForm = (e) => {
   e.preventDefault();
@@ -278,15 +306,20 @@ const submitPassForm = (e) => {
   const formData = new FormData(passForm);
   const data = new URLSearchParams(formData);
 
-  fetch('https://reqres.in/api/user', {
+  fetch('https://reqres.in/api/password', {
     method: 'POST',
     body: data
-  }).then(res => res.json())
-  .then(data => {
-    if (data.success === true) {
+  }).then(res => {
+    if (!res.ok) {
+      throw new Error("Server error");
+    }
+    return res.json()
+  }).then(data => {
+    if (data) {
       setTimeout(() => {
         passModal.style.display = "none";
         hideElement(infoSucces);
+        clearInputs();
       }, 2000);
     } else {
       setMessage(notExistError, data);

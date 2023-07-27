@@ -33,7 +33,7 @@
       </div>
     </div>
 
-    <div id="email__modal" class="modal">
+    <div id="reset__modal" class="modal">
       <div class="modal__content">
         <span class="close">&times;</span>
         <h2>Reset Password</h2>
@@ -53,12 +53,13 @@
         <span class="close">&times;</span>
         <h2>New Password</h2>
         <span class="not-exist__error"></span>
-        <form id="form__pass">
+        <form id="form__pass" action="#">
           <input type="text" name="name" style="display: none;" aria-hidden="true" autocomplete="username">
           <input type="password" name="new-password" placeholder="Enter your password" class="input" autocomplete="new-password" required>
           <span class="error__text" id="password__error"></span>
           <input type="password" name="confirm__new-password" placeholder="Confirm your password" class="input" autocomplete="new-password" required>
           <span class="error__text" id="confirm__password-error"></span>
+          <input type="hidden" name="reset-token">
           <span class="error__message"></span>
           <span class="info">Password changed successfully </span><br>
           <button type="submit" class="submit__btn">Save password</button>
@@ -86,6 +87,7 @@
           <span class="error__text" id="confirm__password-error"></span>
           <a href="#" id="login__link">Already have an account? Log in</a>
           <span class="error__message"></span>
+          <span class="info">You have successfully sign up. Welcome!</span><br>
           <button type="submit" class="submit__btn">Sign up</button>
         </form>
       </div>

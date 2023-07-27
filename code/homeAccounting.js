@@ -1,5 +1,13 @@
 "use strict"
 
+const nameRegex = /^[a-zA-Z\s]+$/;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const passRegex = /^(?=.*\d)[a-zA-Z\d]{8,}$/;
+
+const validateField = (value, regex) => {
+  return regex.test(value);
+};
+
 const modalData = [
   { title: "Change name", buttonText: "Save name", identifier: "name" },
   { title: "Change surname", buttonText: "Save surname", identifier: "secondname" },
@@ -33,7 +41,7 @@ modalData.forEach((data) => {
         <span class="error__text" id="${errorId}"></span>
         <span class="error__message"></span>
         <span class="info">You have successfully changed your data!</span><br>
-        <input type="submit" value="${data.buttonText}" class="submit__btn">
+        <button type="submit" class="submit__btn">${data.buttonText}</button>
       </form>
     </div>
   </div>
@@ -42,6 +50,139 @@ modalData.forEach((data) => {
   const containerModal = document.getElementById('container__modal');
   containerModal.insertAdjacentHTML('afterbegin', modalContent);
 });
+
+const clearInputs = () => {
+  const inputFields = document.querySelectorAll('.modal__content input');
+  inputFields.forEach(input => {
+    input.value = '';
+  });
+  const errorTextElements = document.querySelectorAll('.error__text');
+  errorTextElements.forEach(errorText => {
+    errorText.textContent = '';
+  });
+};
+
+const errorMessage = document.querySelectorAll('.error__message');
+const notExistError = document.querySelectorAll('.not-exist__error');
+const infoSucces = document.querySelectorAll('.info');
+
+const showElement = (elements) => {
+  elements.forEach(element => {
+    if (element) {
+      element.style.display = "block";
+    }
+  });
+};
+
+const hideElement = (elements) => {
+  elements.forEach(element => {
+    if (element) {
+      element.style.display = "none";
+    }
+  });
+};
+
+const setMessage = (elements, message) => {
+  elements.forEach(element => {
+    element.textContent = message;
+  });
+};
+
+const validateAndSubmitForm = (e) => {
+  e.preventDefault();
+
+  const form = e.target;
+  const formData = new FormData(form);
+  const data = new URLSearchParams(formData);
+
+  const formIdentifier = form.getAttribute('id');
+
+  switch (formIdentifier) {
+    case "form__name":
+      const nameInput = formData.get('name');
+      if (!validateField(nameInput, nameRegex)) {
+        setMessage(document.querySelectorAll(`#${formIdentifier} .error__text`), "Incorrect name format");
+        return;
+      } else {
+        setMessage(document.querySelectorAll(`#${formIdentifier} .error__text`), "");
+      }
+      break;
+
+    case "form__secondname":
+      const surnameInput = formData.get('secondname');
+      if (!validateField(surnameInput, nameRegex)) {
+        setMessage(document.querySelectorAll(`#${formIdentifier} .error__text`), "Incorrect surname format");
+        return;
+      } else {
+        setMessage(document.querySelectorAll(`#${formIdentifier} .error__text`), "");
+      }
+      break;
+
+    case "form__mail":
+      const emailInput = formData.get('mail');
+      if (!validateField(emailInput, emailRegex)) {
+        setMessage(document.querySelectorAll(`#${formIdentifier} .error__text`), "Incorrect email format");
+        return;
+      } else {
+        setMessage(document.querySelectorAll(`#${formIdentifier} .error__text`), "");
+      }
+      break;
+
+    case "form__password":
+      const passInput = formData.get('password');
+      const confirmPassInput = formData.get('password__confirm');
+
+      if (!validateField(passInput, passRegex)) {
+        setMessage(document.querySelectorAll(`#${formIdentifier} .error__text`), "The password must contain a minimum of 8 characters, including at least one digit");
+        return;
+      } else {
+        setMessage(document.querySelectorAll(`#${formIdentifier} .error__text`), "");
+      }
+
+      if (passInput !== confirmPassInput) {
+        setMessage(document.querySelectorAll(`#${formIdentifier} .error__text`), "Passwords do not match");
+        return;
+      }
+      break;
+
+    default:
+      return;
+    }
+
+  fetch('https://reqres.in/api/home', {
+    method: 'POST',
+    body: data
+  }).then(res => {
+    if (!res.ok) {
+      throw new Error("Server error");
+    }
+    return res.json()
+    }).then(data => {
+    if (data) {
+      const modals = document.getElementById(formIdentifier.replace("form", "").toUpperCase() + "__modal");
+      showElement(infoSucces);
+      setTimeout(() => {
+        hideElement(infoSucces);
+        // modals.style.display = "none";
+        clearInputs();
+      }, 2000);
+    } else {
+      setMessage(notExistError, data);
+    }
+    console.log(data);
+  }).catch(error => {
+    setMessage(errorMessage, "No server connection");
+    console.log(error);
+  });
+};
+const nameForm = document.getElementById('form__name');
+nameForm.addEventListener("submit", validateAndSubmitForm);
+const secondnameForm = document.getElementById('form__secondname');
+secondnameForm.addEventListener("submit", validateAndSubmitForm);
+const mailForm = document.getElementById('form__mail');
+mailForm.addEventListener("submit", validateAndSubmitForm);
+const passwordForm = document.getElementById('form__password');
+passwordForm.addEventListener("submit", validateAndSubmitForm);
 
 const html = document.querySelector('html');
 const logoutModal = document.getElementById('logout__modal');
@@ -77,17 +218,6 @@ openModalHandler(nameModal, nameButton);
 openModalHandler(surnameModal, surnameButton);
 openModalHandler(emailModal, emailButton);
 openModalHandler(passwordModal, passwordButton);
-
-const clearInputs = () => {
-  const inputFields = document.querySelectorAll('.form__profile input');
-  inputFields.forEach(input => {
-    input.value = '';
-  });
-  const errorTextElements = document.querySelectorAll('.error__text');
-  errorTextElements.forEach(errorText => {
-    errorText.textContent = '';
-  });
-};
 
 const closeButtons = document.getElementsByClassName('close');
 for (let i = 0; i < closeButtons.length; i++) {
@@ -189,36 +319,6 @@ menuFilt.addEventListener("click", (e) => {
   e.stopPropagation();
 });
 
-const nameRegex = /^[a-zA-Z\s]+$/;
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const passRegex = /^(?=.*\d)[a-zA-Z\d]{8,}$/;
-
-const validateField = (value, regex) => {
-  return regex.test(value);
-};
-
-const errorMessage = document.querySelectorAll('.error__message');
-const notExistError = document.querySelectorAll('.not-exist__error');
-const infoSucces = document.querySelectorAll('.info');
-
-const showElement = (elements) => {
-  elements.forEach(element => {
-    element.style.display = "block";
-  });
-};
-
-const hideElement = (elements) => {
-  elements.forEach(element => {
-    element.style.display = "none";
-  });
-};
-
-const setMessage = (elements, message) => {
-  elements.forEach(element => {
-    element.textContent = message;
-  });
-};
-
 const submitChangeForm = (e) => {
   const usernameInput = document.querySelector('input[name="username"]');
   const usernameError = document.getElementById('username__arror');
@@ -275,7 +375,6 @@ const submitChangeForm = (e) => {
   } else {
     confirmPassError.textContent = "";
   }
-  showElement(infoSucces);
 
   const formData = new FormData(changeForm);
   const data = new URLSearchParams(formData);
@@ -283,12 +382,18 @@ const submitChangeForm = (e) => {
   fetch('https://reqres.in/api/home', {
     method: 'POST',
     body: data
-  }).then(res => res.json())
-  .then(data => {
+  }).then(res => {
+    if (!res.ok) {
+      throw new Error("Server error");
+    }
+    return res.json()
+  }).then(data => {
     if (data) {
+      showElement(infoSucces);
       setTimeout(() => {
         changeModalAll.style.display = "none";
         hideElement(infoSucces);
+        clearInputs();
       }, 2000);
     } else {
       setMessage(notExistError, data);
@@ -361,8 +466,12 @@ transactionApply.addEventListener("click", (e) => {
     },
     body: JSON.stringify(transactionData)
   })
-  .then(response => response.json())
-  .then(data => {
+  .then(res => {
+    if (!res.ok) {
+      throw new Error("Server error");
+    }
+    return res.json()
+  }).then(data => {
     if (data) {
       console.log(data);
       const createTable = document.getElementById('table__body');
