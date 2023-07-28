@@ -232,7 +232,6 @@ const submitResetForm = (e) => {
   } else {
     emailErrorR.textContent = "";
   }
-  showElement(infoSucces);
 
   const formData = new FormData(resetForm);
   const data = new URLSearchParams(formData);
@@ -247,11 +246,12 @@ const submitResetForm = (e) => {
     return res.json()
   }).then(data => {
     if (data) {
+      showElement(infoSucces);
       setTimeout(() => {
         resetModal.style.display = "none";
         hideElement(infoSucces);
         clearInputs();
-      }, 2000);
+      }, 2500);
     } else {
       setMessage(notExistError, data);
     }
@@ -264,22 +264,17 @@ const submitResetForm = (e) => {
 const resetForm = document.getElementById('form__email');
 resetForm.addEventListener("submit", submitResetForm);
 
-// Проверка наличия токена в параметрах URL
-const urlParams = new URLSearchParams(window.location.search);
-const resetToken = urlParams.get('token'); // Здесь 'token' - это имя параметра в URL, в котором передается токен
-// Функция для открытия модального окна изменения пароля с передачей токена
-const openResetPasswordModal = (token) => {
-  if (token) {
-    // Откройте модальное окно изменения пароля
+const successValue = document.getElementById('success__value').value;
+console.log(successValue);
+const success = (successValue === 'true');
+console.log(success);
+const openResetPasswordModal = (success) => {
+  if (success) {
     openModal(passModal);
-    // Здесь вы можете установить токен в скрытое поле модального окна, чтобы его можно было передать на сервер при отправке нового пароля
-    const tokenInput = document.querySelector('input[name="reset-token"]');
-    tokenInput.value = token;
+    console.log(success);
   }
 };
-// Вызов функции для открытия модального окна, если токен присутствует в URL
-openResetPasswordModal(resetToken);
-
+openResetPasswordModal(success);
 
 const submitPassForm = (e) => {
   e.preventDefault();
