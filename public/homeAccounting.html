@@ -14,7 +14,8 @@
           <span class="arrow"></span></button>
         <button id="filter" class="filter__btn">Filters
           <span class="arrow"></span></button>
-        <button id="username" class="username__btn">Username
+          <div id="username" class="username__btn">
+            <span id="firstName">А</span> <span id="lastName">В</span>
           <form class="user__block" id="user__block" novalidate>
             <input type="button" id="name__btn" value="Change name">
             <input type="button" id="surname__btn" value="Change surname">
@@ -23,7 +24,7 @@
             <input type="button" id="open__change-profile" value="Change all profile">
             <input type="button" id="open__logout" value="Log Out">
           </form>
-        </button>
+        </div>
       </div>
     </div>
 
@@ -147,7 +148,7 @@
         <span class="not-exist__error"></span>
         <form id="form__profile" class="form__profile" novalidate>
           <input type="text" name="username" placeholder="Change name" class="input" autocomplete="name" required>
-          <span class="error__text" id="username__arror"></span>
+          <span class="error__text" id="username__error"></span>
           <input type="text" name="surname" placeholder="Change surname" class="input" autocomplete="name" required>
           <span class="error__text" id="surname__error"></span>
           <input type="email" name="email" placeholder="Change email" class="input" autocomplete="email" required>
@@ -170,6 +171,8 @@
         <span class="close">&times;</span>
         <form id="form__logout" novalidate>
           <h2>Log out</h2>
+          <span class="not-exist__error"></span>
+          <span class="error__message"></span>
           <button type="button" class="yes__btn">Yes</button>
           <button type="button" class="no__btn">No</button>
           </form>

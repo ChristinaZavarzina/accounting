@@ -103,6 +103,13 @@ const submitLoginForm = (e) => {
     return;
   }
 
+  const firstName = data.first_name;
+  const lastName = data.last_name;
+  if (firstName && lastName) {
+    localStorage.setItem("firstName", firstName);
+    localStorage.setItem("lastName", lastName);
+  }
+
   const formData = new FormData(loginForm);
   const data = new URLSearchParams(formData);
 
@@ -191,6 +198,12 @@ const submitSignupForm = (e) => {
   }
   showElement(infoSucces);
 
+  const firstName = usernameInput.value;
+  const lastName = surnameInput.value;
+  localStorage.setItem("firstName", firstName);
+  localStorage.setItem("lastName", lastName);
+
+
   const formData = new FormData(signupForm);
   const data = new URLSearchParams(formData);
 
@@ -265,13 +278,10 @@ const resetForm = document.getElementById('form__email');
 resetForm.addEventListener("submit", submitResetForm);
 
 const successValue = document.getElementById('success__value').value;
-console.log(successValue);
 const success = (successValue === 'true');
-console.log(success);
 const openResetPasswordModal = (success) => {
   if (success) {
     openModal(passModal);
-    console.log(success);
   }
 };
 openResetPasswordModal(success);

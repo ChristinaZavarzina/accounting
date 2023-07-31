@@ -1,5 +1,17 @@
 "use strict"
 
+document.addEventListener("DOMContentLoaded", () => {
+  const firstNameElement = document.getElementById("firstName");
+  const lastNameElement = document.getElementById("lastName");
+  const firstName = localStorage.getItem("firstName");
+  const lastName = localStorage.getItem("lastName");
+
+  if (firstName && lastName) {
+    firstNameElement.textContent = firstName;
+    lastNameElement.textContent = lastName;
+  }
+});
+
 const nameRegex = /^[a-zA-Z\s]+$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passRegex = /^(?=.*\d)[a-zA-Z\d]{8,}$/;
@@ -88,6 +100,29 @@ const setMessage = (elements, message) => {
   });
 };
 
+const checkEmailExists = (email, callback) => {
+  fetch('https://reqres.in/api/email', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ email })
+  })
+  .then(res => {
+    if (!res.ok) {
+      throw new Error('Server error');
+    }
+    return res.json();
+  })
+  .then(data => {
+    callback(null, data.exists); // сервер вернет объект { exists: true } или { exists: false }
+  })
+  .catch(error => {
+    console.log('Error checking email:', error);
+    callback(error, false);
+  });
+};
+
 const validateAndSubmitForm = (e) => {
   e.preventDefault();
 
@@ -96,6 +131,7 @@ const validateAndSubmitForm = (e) => {
   const data = new URLSearchParams(formData);
 
   const formIdentifier = form.getAttribute('id');
+  let emailInput;
 
   switch (formIdentifier) {
     case "form__name":
@@ -119,7 +155,7 @@ const validateAndSubmitForm = (e) => {
       break;
 
     case "form__mail":
-      const emailInput = formData.get('mail');
+      emailInput = formData.get('mail');
       if (!validateField(emailInput, emailRegex)) {
         setMessage(document.querySelectorAll(`#${formIdentifier} .error__text`), "Incorrect email format");
         return;
@@ -149,32 +185,49 @@ const validateAndSubmitForm = (e) => {
       return;
     }
 
-  fetch('https://reqres.in/api/home', {
-    method: 'POST',
-    body: data
-  }).then(res => {
-    if (!res.ok) {
-      throw new Error("Server error");
-    }
-    return res.json()
-    }).then(data => {
-    if (data) {
-      const modals = document.getElementById(formIdentifier.replace("form", "").toUpperCase() + "__modal");
-      showElement(infoSucces);
-      setTimeout(() => {
-        hideElement(infoSucces);
-        // modals.style.display = "none";
-        clearInputs();
-      }, 2000);
-    } else {
+  checkEmailExists(emailInput, (error, emailExists) => {
+    if (error) {
+      console.log('Error during email check:', error);
       setMessage(notExistError, data);
+    } else {
+      if (emailExists) {
+        setMessage(document.querySelectorAll(`#${formIdentifier} .error__text`), 'This email already exists in the database');
+        return;
+      } else {
+        setMessage(document.querySelectorAll(`#${formIdentifier} .error__text`), "");
+      }
+
+      fetch('https://reqres.in/api/four-modals', {
+        method: 'POST',
+        body: data
+      }).then(res => {
+        if (!res.ok) {
+          throw new Error("Server error");
+        }
+        return res.json()
+        }).then(data => {
+        if (data) {
+          const modals = document.getElementsByClassName('modal');
+          showElement(infoSucces);
+          setTimeout(() => {
+            hideElement(infoSucces);
+            for (let j = 0; j < modals.length; j++) {
+              modals[j].style.display = 'none';
+            }
+            clearInputs();
+          }, 2000);
+        } else {
+          setMessage(notExistError, data);
+        }
+        console.log(data);
+      }).catch(error => {
+        setMessage(errorMessage, "No server connection");
+        console.log(error);
+      });
     }
-    console.log(data);
-  }).catch(error => {
-    setMessage(errorMessage, "No server connection");
-    console.log(error);
   });
 };
+
 const nameForm = document.getElementById('form__name');
 nameForm.addEventListener("submit", validateAndSubmitForm);
 const secondnameForm = document.getElementById('form__secondname');
@@ -233,11 +286,41 @@ for (let i = 0; i < closeButtons.length; i++) {
 const yesBtn = document.querySelector('.yes__btn');
 const noBtn = document.querySelector('.no__btn');
 
+const submitLogoutForm = (e) => {
+  e.preventDefault();
+
+  const formData = new FormData(logoutForm);
+  const data = new URLSearchParams(formData);
+
+  fetch('https://reqres.in/api/logout', {
+    method: 'POST',
+    body: data
+  }).then(res => {
+    if (!res.ok) {
+      throw new Error("Server error");
+    }
+    return res.json()
+  }).then(data => {
+    if (data) {
+      setTimeout(() => {
+        logoutModal.style.display = "none";
+        document.location.href = '../public/index.html';
+      }, 2000);
+    } else {
+      setMessage(notExistError, data);
+    }
+    console.log(data);
+  }).catch(error => {
+    setMessage(errorMessage, "No server connection");
+    console.log(error);
+  });
+};
+const logoutForm = document.getElementById('form__logout');
+logoutForm.addEventListener("submit", submitLogoutForm);
+
 yesBtn.addEventListener("click", (e) => {
   e.preventDefault();
-  setTimeout(() => {
-    document.location.href = '../public/index.html';
-  }, 2000);
+  submitLogoutForm(e);
 });
 
 noBtn.addEventListener("click", (e) => {
@@ -253,7 +336,6 @@ const transactionBlock = document.getElementById('transaction__block');
 const filterBlock = document.getElementById('filter__block');
 const transactionArrow = document.querySelector('.arrow');
 const filterArrow = filterBtn.querySelector('.arrow');
-
 let currentOpenBlock = null;
 
 const toggleBlock = (block, arrow, flag) => {
@@ -295,7 +377,6 @@ const handleBtnClick = (btn, block, arrow) => {
     }
   });
 };
-
 handleBtnClick(usernameBtn, userBlock, null);
 handleBtnClick(transactionBtn, transactionBlock, transactionArrow);
 handleBtnClick(filterBtn, filterBlock, filterArrow);
@@ -321,7 +402,7 @@ menuFilt.addEventListener("click", (e) => {
 
 const submitChangeForm = (e) => {
   const usernameInput = document.querySelector('input[name="username"]');
-  const usernameError = document.getElementById('username__arror');
+  const usernameError = document.getElementById('username__error');
   const surnameInput = document.querySelector('input[name="surname"]');
   const surnameError = document.getElementById('surname__error');
   const emailInput = document.querySelector('input[name="email"]');
@@ -376,32 +457,46 @@ const submitChangeForm = (e) => {
     confirmPassError.textContent = "";
   }
 
-  const formData = new FormData(changeForm);
-  const data = new URLSearchParams(formData);
-
-  fetch('https://reqres.in/api/home', {
-    method: 'POST',
-    body: data
-  }).then(res => {
-    if (!res.ok) {
-      throw new Error("Server error");
-    }
-    return res.json()
-  }).then(data => {
-    if (data) {
-      showElement(infoSucces);
-      setTimeout(() => {
-        changeModalAll.style.display = "none";
-        hideElement(infoSucces);
-        clearInputs();
-      }, 2000);
-    } else {
+  checkEmailExists(emailInput.value, (error, emailExists) => {
+    if (error) {
+      console.log('Error during email check:', error);
       setMessage(notExistError, data);
+    } else {
+      if (emailExists) {
+        emailError.textContent = 'This email already exists in the database';
+        return;
+      } else {
+        emailError.textContent = '';
+      }
+
+    const formData = new FormData(changeForm);
+    const data = new URLSearchParams(formData);
+    
+    fetch('https://reqres.in/api/profile', {
+      method: 'POST',
+      body: data
+    }).then(res => {
+      if (!res.ok) {
+        throw new Error("Server error");
+      }
+      return res.json()
+    }).then(data => {
+      if (data) {
+        showElement(infoSucces);
+        setTimeout(() => {
+          changeModalAll.style.display = "none";
+          hideElement(infoSucces);
+          clearInputs();
+        }, 2000);
+      } else {
+        setMessage(notExistError, data);
+      }
+      console.log(data);
+    }).catch(error => {
+      setMessage(errorMessage, "No server connection");
+      console.log(error);
+    });
     }
-    console.log(data);
-  }).catch(error => {
-    setMessage(errorMessage, "No server connection");
-    console.log(error);
   });
 };
 const changeForm = document.getElementById('form__profile');
@@ -441,8 +536,59 @@ typeSelectFilter.addEventListener("change", function () {
   }
 });
 
-const transactionApply = document.querySelector('.transaction__apply');
-transactionApply.addEventListener("click", (e) => {
+// transactions это твоя переменная которая присылает транзакцию
+const displayTransactions = (transactions) => {
+  const tableBody = document.getElementById('table__body');
+  tableBody.innerHTML = '';
+  transactions.forEach((transaction) => {
+    const newRow = tableBody.insertRow();
+    const typeCell = newRow.insertCell();
+    typeCell.textContent = transaction.type;
+    const amountCell = newRow.insertCell();
+    amountCell.textContent = transaction.amount;
+    const descriptionCell = newRow.insertCell();
+    descriptionCell.textContent = transaction.description;
+    const categoryCell = newRow.insertCell();
+    categoryCell.textContent = transaction.category;
+    const dateCell = newRow.insertCell();
+    dateCell.textContent = transaction.date;
+    const deleteCell = newRow.insertCell();
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.classList.add('btn__delete');
+    deleteBtn.addEventListener('click', () => {
+      tableBody.deleteRow(newRow.rowIndex);
+      displayTotalBalance();
+    });
+    deleteCell.append(deleteBtn);
+  });
+};
+
+const getTransactions = () => {
+  fetch('https://reqres.in/api/transactions', {
+    method: 'GET',
+  })
+  .then(res => {
+    if (!res.ok) {
+      throw new Error("Server error");
+    }
+    return res.json();
+  })
+  .then(data => {
+    if (data && data.transactions && Array.isArray(data.transactions)) {
+      displayTransactions(data.transaction);
+    } else {
+      const emptyTable = document.querySelector('.empty');
+      setMessage(emptyTable);
+    }
+  })
+  .catch(error => {
+    setMessage(errorMessage, "No server connection");
+    console.log(error);
+  });
+};
+
+const handleTransactionApply = (e) => {
   e.preventDefault();
   const typeSelect = document.getElementById('type');
   const amountInput = document.getElementById('amount');
@@ -470,8 +616,9 @@ transactionApply.addEventListener("click", (e) => {
     if (!res.ok) {
       throw new Error("Server error");
     }
-    return res.json()
-  }).then(data => {
+    return res.json();
+  })
+  .then(data => {
     if (data) {
       console.log(data);
       const createTable = document.getElementById('table__body');
@@ -492,8 +639,8 @@ transactionApply.addEventListener("click", (e) => {
       deleteBtn.textContent = 'Delete';
       deleteBtn.classList.add('btn__delete');
       deleteBtn.addEventListener("click", () => {
-      createTable.deleteRow(newRow.rowIndex);
-      displayTotalBalance();
+        createTable.deleteRow(newRow.rowIndex);
+        displayTotalBalance();
       });
       deleteCell.append(deleteBtn);
 
@@ -508,14 +655,22 @@ transactionApply.addEventListener("click", (e) => {
       transactionArrow.classList.remove('active');
       filterArrow.classList.remove('active');
       displayTotalBalance();
+
+      getTransactions();
     } else {
-      console.log(setMessage(notExistError, data));
+      setMessage(notExistError, data);
     }
   })
   .catch(error => {
-    console.log(setMessage(errorMessage, "No server connection"));
+    setMessage(errorMessage, "No server connection");
     console.log(error);
   });
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  getTransactions();
+  const transactionApply = document.querySelector('.transaction__apply');
+  transactionApply.addEventListener("click", handleTransactionApply);
 });
 
 const filterApply = document.querySelector('.filter__apply');
@@ -575,19 +730,6 @@ balanceScreen.setAttribute('disabled', 'true');
 balanceScreen.id = 'total__balance';
 balanceContainer.append(balanceScreen);
 
-const tableContainer = document.createElement('div');
-tableContainer.classList.add('table__container');
-bodyContainer.append(tableContainer);
-
-const createTable = document.createElement('table');
-createTable.classList.add('table__body');
-createTable.id = 'table__body';
-tableContainer.append(createTable);
-
-const footer = document.createElement('footer');
-footer.textContent = 'by 2023';
-document.body.append(footer);
-
 const calcTotalBalance = () => {
   const rows = document.querySelectorAll('#table__body tr');
   let totalBalance = 0;
@@ -611,3 +753,21 @@ const displayTotalBalance = () => {
   totalBalanceEl.value = `$${totalBalance.toFixed(2)}`;
 };
 displayTotalBalance();
+
+const tableEmpty = document.createElement('span');
+tableEmpty.classList.add('empty');
+tableEmpty.textContent = 'Table is empty';
+balanceContainer.after(tableEmpty);
+
+const tableContainer = document.createElement('div');
+tableContainer.classList.add('table__container');
+bodyContainer.append(tableContainer);
+
+const createTable = document.createElement('table');
+createTable.classList.add('table__body');
+createTable.id = 'table__body';
+tableContainer.append(createTable);
+
+const footer = document.createElement('footer');
+footer.textContent = 'by 2023';
+document.body.append(footer);
